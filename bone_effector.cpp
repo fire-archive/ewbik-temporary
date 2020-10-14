@@ -30,47 +30,47 @@
 
 #include "bone_effector.h"
 
-void DMIKBoneEffector::_bind_methods() {
+void BoneEffector::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_target_transform", "transform"),
-			&DMIKBoneEffector::set_target_transform);
+			&BoneEffector::set_target_transform);
 	ClassDB::bind_method(D_METHOD("get_target_transform"),
-			&DMIKBoneEffector::get_target_transform);
+			&BoneEffector::get_target_transform);
 
 	ClassDB::bind_method(D_METHOD("set_target_node", "node"),
-			&DMIKBoneEffector::set_target_node);
+			&BoneEffector::set_target_node);
 	ClassDB::bind_method(D_METHOD("get_target_node"),
-			&DMIKBoneEffector::get_target_node);
+			&BoneEffector::get_target_node);
 
 	ClassDB::bind_method(D_METHOD("set_budget", "ms"),
-			&DMIKBoneEffector::set_budget_ms);
+			&BoneEffector::set_budget_ms);
 	ClassDB::bind_method(D_METHOD("get_budget"),
-			&DMIKBoneEffector::get_budget_ms);
+			&BoneEffector::get_budget_ms);
 
 	ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM, "target_transform"), "set_target_transform", "get_target_transform");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "target_node"), "set_target_node", "get_target_node");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "budget"), "set_budget", "get_budget");
 }
 
-void DMIKBoneEffector::set_target_transform(Transform p_target_transform) {
+void BoneEffector::set_target_transform(Transform p_target_transform) {
 	target_transform = p_target_transform;
 }
 
-Transform DMIKBoneEffector::get_target_transform() const {
+Transform BoneEffector::get_target_transform() const {
 	return target_transform;
 }
 
-void DMIKBoneEffector::set_target_node(NodePath p_target_node_path) {
+void BoneEffector::set_target_node(NodePath p_target_node_path) {
 	target_node = p_target_node_path;
 }
 
-NodePath DMIKBoneEffector::get_target_node() const {
+NodePath BoneEffector::get_target_node() const {
 	return target_node;
 }
 
-real_t DMIKBoneEffector::get_budget_ms() const {
+real_t BoneEffector::get_budget_ms() const {
 	return budget_ms;
 }
 
-void DMIKBoneEffector::set_budget_ms(real_t p_budget_ms) {
+void BoneEffector::set_budget_ms(real_t p_budget_ms) {
 	budget_ms = p_budget_ms;
 }

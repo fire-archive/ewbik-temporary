@@ -30,8 +30,8 @@
 #ifndef bone_effector_transform_h__
 #define bone_effector_transform_h__
 
-class DMIKBoneEffectorTransform : public Reference {
-	GDCLASS(DMIKBoneEffectorTransform, Reference);
+class BoneEffectorTransform : public Reference {
+	GDCLASS(BoneEffectorTransform, Reference);
 
 public:
 	int effector_bone = -1;

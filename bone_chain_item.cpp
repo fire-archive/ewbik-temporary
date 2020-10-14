@@ -34,7 +34,7 @@
 #include "skeleton_modification_3d_dmik.h"
 
 
-void DMIKShadowSkeletonBone::recursively_align_axes_outward_from(Ref<DMIKShadowSkeletonBone> sb) {
+void BoneChainItem::recursively_align_axes_outward_from(Ref<BoneChainItem> sb) {
 	Transform bAxes = sb->axes;
 	Transform cAxes = sb->constraint->get_constraint_axes();
 	if (sb->base_bone.is_null()) {
@@ -46,7 +46,7 @@ void DMIKShadowSkeletonBone::recursively_align_axes_outward_from(Ref<DMIKShadowS
 	//cAxes.alignGlobalsTo(b.getMajorRotationAxes());
 	//cAxes.markDirty();
 	//cAxes.updateGlobal();
-	Vector<Ref<DMIKShadowSkeletonBone>> bones = sb->base_bone->get_bones();
+	Vector<Ref<BoneChainItem>> bones = sb->base_bone->get_bones();
 	for (int32_t bones_i = 0; bones_i < bones.size(); bones_i++) {
 		//bAxes.alignGlobalsTo(b.localAxes());
 		//bAxes.markDirty();
@@ -55,13 +55,13 @@ void DMIKShadowSkeletonBone::recursively_align_axes_outward_from(Ref<DMIKShadowS
 		//cAxes.markDirty();
 		//cAxes.updateGlobal();
 	}
-	Vector<Ref<DMIKShadowSkeletonBone>> children = sb->get_child_chains();
+	Vector<Ref<BoneChainItem>> children = sb->get_child_chains();
 	for (int32_t child_i = 0; child_i < children.size(); child_i++) {
 		sb->recursively_align_axes_outward_from(children[child_i]);
 	}
 }
 
-void DMIKShadowSkeletonBone::align_axes_to_bones() {
+void BoneChainItem::align_axes_to_bones() {
 	if (!is_bone_effector(base_bone) && parent_chain.is_valid()) {
 		parent_chain->align_axes_to_bones();
 	} else {
@@ -69,19 +69,19 @@ void DMIKShadowSkeletonBone::align_axes_to_bones() {
 	}
 }
 
-void DMIKShadowSkeletonBone::set_processed(bool p_b) {
+void BoneChainItem::set_processed(bool p_b) {
 	processed = p_b;
 	if (processed == false) {
-		Vector<Ref<DMIKShadowSkeletonBone>> chains = get_child_chains();
+		Vector<Ref<BoneChainItem>> chains = get_child_chains();
 		for (int32_t i = 0; i < chains.size(); i++) {
 			chains.write[i]->set_processed(false);
 		}
 	}
 }
 
-bool DMIKShadowSkeletonBone::is_bone_effector(Ref<DMIKShadowSkeletonBone> current_bone) {
+bool BoneChainItem::is_bone_effector(Ref<BoneChainItem> current_bone) {
 	bool is_effector = false;
-	Ref<DMIKBoneEffector> effector;
+	Ref<BoneEffector> effector;
 	for (int32_t i = 0; i < multi_effector.size(); i++) {
 		effector = multi_effector[i];
 		if (effector.is_null()) {
@@ -96,10 +96,10 @@ bool DMIKShadowSkeletonBone::is_bone_effector(Ref<DMIKShadowSkeletonBone> curren
 	return is_effector;
 }
 
-void DMIKShadowSkeletonBone::build_chain(Ref<DMIKShadowSkeletonBone> p_start_from) {
-	Ref<DMIKShadowSkeletonBone> current_bone = p_start_from;
+void BoneChainItem::build_chain(Ref<BoneChainItem> p_start_from) {
+	Ref<BoneChainItem> current_bone = p_start_from;
 	while (true) {
-		Vector<Ref<DMIKShadowSkeletonBone>> current_bone_children = get_bone_children(skeleton, current_bone);
+		Vector<Ref<BoneChainItem>> current_bone_children = get_bone_children(skeleton, current_bone);
 		children.push_back(current_bone);
 		tip_bone = current_bone;
 		String constraint_name = skeleton->get_bone_name(current_bone->bone);
@@ -119,13 +119,13 @@ void DMIKShadowSkeletonBone::build_chain(Ref<DMIKShadowSkeletonBone> p_start_fro
 	}
 }
 
-Vector<Ref<DMIKShadowSkeletonBone>> DMIKShadowSkeletonBone::get_bone_children(Skeleton *p_skeleton, Ref<DMIKShadowSkeletonBone> p_bone) {
-	Vector<Ref<DMIKShadowSkeletonBone>> bone_chain_items;
+Vector<Ref<BoneChainItem>> BoneChainItem::get_bone_children(Skeleton *p_skeleton, Ref<BoneChainItem> p_bone) {
+	Vector<Ref<BoneChainItem>> bone_chain_items;
 	for (int32_t bone_i = 0; bone_i < p_skeleton->get_bone_count(); bone_i++) {
 		int32_t parent = p_skeleton->get_bone_parent(bone_i);
 		if (parent == p_bone->bone) {
 			if (bone_chain_items.find(p_bone) == -1) {
-				Ref<DMIKShadowSkeletonBone> item;
+				Ref<BoneChainItem> item;
 				item.instance();
 				item->bone = bone_i;
 				chain_root->bone_segment_map[bone_i] = item;
@@ -138,17 +138,17 @@ Vector<Ref<DMIKShadowSkeletonBone>> DMIKShadowSkeletonBone::get_bone_children(Sk
 	return bone_chain_items;
 }
 
-void DMIKShadowSkeletonBone::create_child_chains(Ref<DMIKShadowSkeletonBone> p_from_bone) {
-	Vector<Ref<DMIKShadowSkeletonBone>> children = get_bone_children(skeleton, p_from_bone);
+void BoneChainItem::create_child_chains(Ref<BoneChainItem> p_from_bone) {
+	Vector<Ref<BoneChainItem>> children = get_bone_children(skeleton, p_from_bone);
 	for (int i = 0; i < children.size(); i++) {
-		Ref<DMIKShadowSkeletonBone> child = children[i];
+		Ref<BoneChainItem> child = children[i];
 		child->init(skeleton, constraints, multi_effector, chain_root, this, child);
 		child_chains.push_back(child);
 	}
 }
 
-void DMIKShadowSkeletonBone::remove_inactive_children() {
-	Vector<Ref<DMIKShadowSkeletonBone>> new_child_chains;
+void BoneChainItem::remove_inactive_children() {
+	Vector<Ref<BoneChainItem>> new_child_chains;
 	for (int i = 0; i < child_chains.size(); i++) {
 		if (child_chains[i]->is_chain_active()) {
 			new_child_chains.push_back(child_chains[i]);
@@ -157,9 +157,9 @@ void DMIKShadowSkeletonBone::remove_inactive_children() {
 	child_chains = new_child_chains;
 }
 
-void DMIKShadowSkeletonBone::merge_with_child_if_appropriate() {
+void BoneChainItem::merge_with_child_if_appropriate() {
 	if (child_chains.size() == 1 && !has_effector) {
-		Ref<DMIKShadowSkeletonBone> child = child_chains[0];
+		Ref<BoneChainItem> child = child_chains[0];
 		tip_bone = child->tip_bone;
 		has_effector = child->has_effector;
 		children.append_array(child->children);
@@ -168,8 +168,8 @@ void DMIKShadowSkeletonBone::merge_with_child_if_appropriate() {
 	}
 }
 
-void DMIKShadowSkeletonBone::print_bone_chains(Skeleton *p_skeleton, Ref<DMIKShadowSkeletonBone> p_current_chain) {
-	Vector<Ref<DMIKShadowSkeletonBone>> bones = p_current_chain->get_bones();
+void BoneChainItem::print_bone_chains(Skeleton *p_skeleton, Ref<BoneChainItem> p_current_chain) {
+	Vector<Ref<BoneChainItem>> bones = p_current_chain->get_bones();
 	ERR_FAIL_COND(!p_current_chain->is_chain_active());
 	print_line("Chain");
 	for (int32_t bone_i = 0; bone_i < bones.size(); bone_i++) {
@@ -181,38 +181,38 @@ void DMIKShadowSkeletonBone::print_bone_chains(Skeleton *p_skeleton, Ref<DMIKSha
 			print_line("");
 		}
 	}
-	Vector<Ref<DMIKShadowSkeletonBone>> bone_chains = p_current_chain->get_child_chains();
+	Vector<Ref<BoneChainItem>> bone_chains = p_current_chain->get_child_chains();
 	for (int32_t i = 0; i < bone_chains.size(); i++) {
 		print_bone_chains(p_skeleton, bone_chains[i]);
 	}
 }
 
-Vector<String> DMIKShadowSkeletonBone::get_default_effectors(Skeleton *p_skeleton, Ref<DMIKShadowSkeletonBone> p_bone_chain, Ref<DMIKShadowSkeletonBone> p_current_chain) {
+Vector<String> BoneChainItem::get_default_effectors(Skeleton *p_skeleton, Ref<BoneChainItem> p_bone_chain, Ref<BoneChainItem> p_current_chain) {
 	Vector<String> effectors;
-	Vector<Ref<DMIKShadowSkeletonBone>> bones = p_current_chain->get_bones();
+	Vector<Ref<BoneChainItem>> bones = p_current_chain->get_bones();
 	BoneId bone = p_current_chain->tip_bone->bone;
 	String bone_name = p_skeleton->get_bone_name(bone);
 	effectors.push_back(bone_name);
-	Vector<Ref<DMIKShadowSkeletonBone>> bone_chains = p_current_chain->get_child_chains();
+	Vector<Ref<BoneChainItem>> bone_chains = p_current_chain->get_child_chains();
 	for (int32_t i = 0; i < bone_chains.size(); i++) {
 		effectors.append_array(get_default_effectors(p_skeleton, p_bone_chain, bone_chains[i]));
 	}
 	return effectors;
 }
 
-bool DMIKShadowSkeletonBone::is_chain_active() const {
+bool BoneChainItem::is_chain_active() const {
 	return is_active;
 }
 
-Vector<Ref<DMIKShadowSkeletonBone>> DMIKShadowSkeletonBone::get_bones() {
+Vector<Ref<BoneChainItem>> BoneChainItem::get_bones() {
 	return children;
 }
 
-Vector<Ref<DMIKShadowSkeletonBone>> DMIKShadowSkeletonBone::get_child_chains() {
+Vector<Ref<BoneChainItem>> BoneChainItem::get_child_chains() {
 	return child_chains;
 }
 
-void DMIKShadowSkeletonBone::init(Skeleton *p_skeleton, Ref<SkeletonModification3DDMIK> p_constraints, Vector<Ref<DMIKBoneEffector>> p_multi_effector, Ref<DMIKShadowSkeletonBone> p_chain, Ref<DMIKShadowSkeletonBone> p_parent_chain, Ref<DMIKShadowSkeletonBone> p_base_bone) {
+void BoneChainItem::init(Skeleton *p_skeleton, Ref<SkeletonModification3DDMIK> p_constraints, Vector<Ref<BoneEffector>> p_multi_effector, Ref<BoneChainItem> p_chain, Ref<BoneChainItem> p_parent_chain, Ref<BoneChainItem> p_base_bone) {
 	ERR_FAIL_COND(this == parent_chain.ptr());
 	parent_chain = p_parent_chain;
 	base_bone = p_base_bone;
@@ -223,14 +223,14 @@ void DMIKShadowSkeletonBone::init(Skeleton *p_skeleton, Ref<SkeletonModification
 	build_chain(p_base_bone);
 }
 
-void DMIKShadowSkeletonBone::set_active() {
+void BoneChainItem::set_active() {
 	is_active = true;
 	if (parent_chain.is_valid()) {
 		parent_chain->set_active();
 	}
 }
 
-void DMIKShadowSkeletonBone::filter_and_merge_child_chains() {
+void BoneChainItem::filter_and_merge_child_chains() {
 	remove_inactive_children();
 	merge_with_child_if_appropriate();
 	for (int i = 0; i < child_chains.size(); i++) {

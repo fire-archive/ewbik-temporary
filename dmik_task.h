@@ -43,7 +43,7 @@ protected:
 public:
 	Skeleton *skeleton = nullptr;
 	Ref<QCP> qcp;
-	Ref<DMIKShadowSkeletonBone> chain = memnew(DMIKShadowSkeletonBone);
+	Ref<BoneChainItem> chain = memnew(BoneChainItem);
 	// Settings
 	float min_distance = 0.01f;
 	int iterations = 4;
@@ -57,7 +57,7 @@ public:
 
 	// Bone data
 	int root_bone = -1;
-	Vector<Ref<DMIKBoneEffectorTransform>> end_effectors;
+	Vector<Ref<BoneEffectorTransform>> end_effectors;
 	Ref<SkeletonModification3DDMIK> dmik;
 };
 #endif // dmik_task_h__

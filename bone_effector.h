@@ -33,8 +33,8 @@
 #include "core/engine.h"
 #include "core/resource.h"
 
-class DMIKBoneEffector : public Resource {
-	GDCLASS(DMIKBoneEffector, Resource);
+class BoneEffector : public Resource {
+	GDCLASS(BoneEffector, Resource);
 
 protected:
 	Transform target_transform;
