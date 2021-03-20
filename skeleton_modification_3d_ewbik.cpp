@@ -181,11 +181,13 @@ void SkeletonModification3DEWBIK::remove_effector(int32_t p_index) {
 void SkeletonModification3DEWBIK::execute(real_t delta) {
 	ERR_FAIL_COND_MSG(!stack || !is_setup || skeleton == nullptr,
 			"Modification is not setup and therefore cannot execute!");
-	if (!enabled)
+	if (!enabled) {
 		return;
+	}
 
-	if (is_dirty)
+	if (is_dirty) {
 		update_skeleton();
+	}
 	solve(stack->get_strength());
 	execution_error_found = false;
 }
@@ -244,8 +246,9 @@ void SkeletonModification3DEWBIK::iterated_improved_solver() {
 }
 
 void SkeletonModification3DEWBIK::update_skeleton() {
-	if (!is_dirty)
+	if (!is_dirty) {
 		return;
+	}
 
 	if (effector_count) {
 		update_segments();
