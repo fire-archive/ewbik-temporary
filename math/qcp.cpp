@@ -191,8 +191,9 @@ real_t QCP::calc_rmsd(real_t &e0, real_t wsum) {
         if (Math::abs(eignv - oldg) < Math::abs(eval_prec * eignv))
             break;
 	}
-	if (i == max_iterations)
+	if (i == max_iterations) {
 		WARN_PRINT(vformat("More than %d iterations needed!", max_iterations));
+	}
 
 	real_t rmsd = Math::sqrt(Math::abs(2.0f * (e0 - eignv) / wsum));
 	e0 = eignv;
