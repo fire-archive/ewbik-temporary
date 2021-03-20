@@ -51,11 +51,13 @@ private:
 	Ref<EWBIKShadowBone3D> tip;
 	Vector<Ref<EWBIKSegmentedSkeleton3D>> child_chains; // Contains only child chains that end with effectors
 	Vector<Ref<EWBIKSegmentedSkeleton3D>> effector_direct_descendents;
-	int32_t chain_length;
+	int32_t chain_length = 0;
 	HashMap<BoneId, Ref<EWBIKShadowBone3D>> bones_map;
 	Ref<EWBIKSegmentedSkeleton3D> parent_chain;
-	int32_t idx_eff_i, idx_eff_f;
-	int32_t idx_headings_i, idx_headings_f;
+	int32_t idx_eff_i = -1;
+	int32_t idx_eff_f = -1;
+	int32_t idx_headings_i = -1;
+	int32_t idx_headings_f = -1;
 
 	Skeleton3D *skeleton = nullptr;
 
