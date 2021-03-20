@@ -78,12 +78,15 @@ void EWBIKBoneEffector3D::update_priorities() {
 	follow_z = priority.z > 0.0;
 
 	num_headings = 1;
-	if (follow_x)
+	if (follow_x) {
 		num_headings += 2;
-	if (follow_y)
+	}
+	if (follow_y) {
 		num_headings += 2;
-	if (follow_z)
+	}
+	if (follow_z) {
 		num_headings += 2;
+	}
 }
 
 void EWBIKBoneEffector3D::update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights) {
@@ -97,21 +100,21 @@ void EWBIKBoneEffector3D::update_target_headings(Skeleton3D *p_skeleton, PackedV
 	if (follow_x) {
 		Vector3 v = Vector3(weight * priority.x, 0.0, 0.0);
 		target_headings.write[index] = goal_transform.xform(v) - origin;
-		target_headings.write[index+1] = goal_transform.xform(-v) - origin;
+		target_headings.write[index + 1] = goal_transform.xform(-v) - origin;
 		index += 2;
 	}
 
 	if (follow_y) {
 		Vector3 v = Vector3(0.0, weight * priority.y, 0.0);
 		target_headings.write[index] = goal_transform.xform(v) - origin;
-		target_headings.write[index+1] = goal_transform.xform(-v) - origin;
+		target_headings.write[index + 1] = goal_transform.xform(-v) - origin;
 		index += 2;
 	}
 
 	if (follow_z) {
 		Vector3 v = Vector3(0.0, 0.0, weight * priority.z);
 		target_headings.write[index] = goal_transform.xform(v) - origin;
-		target_headings.write[index+1] = goal_transform.xform(-v) - origin;
+		target_headings.write[index + 1] = goal_transform.xform(-v) - origin;
 	}
 
 	p_headings.append_array(target_headings);
@@ -137,21 +140,21 @@ void EWBIKBoneEffector3D::update_tip_headings(Skeleton3D *p_skeleton, PackedVect
 	if (follow_x) {
 		Vector3 v = Vector3(scale_by, 0.0, 0.0);
 		tip_headings.write[p_index] = tip_xform.xform(v) - origin;
-		tip_headings.write[p_index+1] = tip_xform.xform(-v) - origin;
+		tip_headings.write[p_index + 1] = tip_xform.xform(-v) - origin;
 		p_index += 2;
 	}
 
 	if (follow_y) {
 		Vector3 v = Vector3(0.0, scale_by, 0.0);
 		tip_headings.write[p_index] = tip_xform.xform(v) - origin;
-		tip_headings.write[p_index+1] = tip_xform.xform(-v) - origin;
+		tip_headings.write[p_index + 1] = tip_xform.xform(-v) - origin;
 		p_index += 2;
 	}
 
 	if (follow_z) {
 		Vector3 v = Vector3(0.0, 0.0, scale_by);
 		tip_headings.write[p_index] = tip_xform.xform(v) - origin;
-		tip_headings.write[p_index+1] = tip_xform.xform(-v) - origin;
+		tip_headings.write[p_index + 1] = tip_xform.xform(-v) - origin;
 		p_index += 2;
 	}
 
