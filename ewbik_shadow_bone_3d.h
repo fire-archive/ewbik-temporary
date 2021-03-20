@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  ik_quat.cpp                                                          */
+/*  ewbik_shadow_bone_3d.h                                               */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -28,67 +28,52 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#include "quat_ik.h"
+#ifndef EWBIK_SHADOW_BONE_3D_H
+#define EWBIK_SHADOW_BONE_3D_H
 
-class DirectionConstraint;
+#include "core/object/reference.h"
+#include "scene/3d/skeleton_3d.h"
+#include "ewbik_bone_effector_3d.h"
+#include "math/ik_transform.h"
 
-Vector<QuatIK> QuatIK::get_swing_twist(Vector3 p_axis) {
-	Vector3 euler = get_euler();
-	const real_t d = Vector3(
-			euler.x,
-			euler.y,
-			euler.z).dot(Vector3(p_axis.x, p_axis.y, p_axis.z));
-	*this = Quat(p_axis * d);
-	normalize();
-	if (d < 0) {
-		operator*(-1.0f);
-	}
+class EWBIKBoneEffector3D;
 
-	QuatIK swing = QuatIK(-x, -y, -z, w);
-	swing = operator*(swing);
+class EWBIKShadowBone3D : public Reference {
+	GDCLASS(EWBIKShadowBone3D, Reference);
 
-	Vector<QuatIK> result;
-	result.resize(2);
-	result.write[0] = swing;
-	result.write[1] = QuatIK(x, y, z, w);
-	return result;
-}
+private:
+	BoneId for_bone = -1;
+	Ref<EWBIKShadowBone3D> parent = nullptr;
+	Vector<Ref<EWBIKShadowBone3D>> children;
+	Ref<EWBIKBoneEffector3D> effector = nullptr;
+	IKTransform xform;
 
-void QuatIK::clamp_to_quadrance_angle(real_t p_cos_half_angle) {
-	real_t new_coeff = 1.0f - (p_cos_half_angle * p_cos_half_angle);
-	real_t current_coeff = y * y + z * z + w * w;
-	if (new_coeff > current_coeff) {
-		return;
-	} else {
-		x = x < 0.0 ? -p_cos_half_angle : p_cos_half_angle;
-		real_t composite_coeff = Math::sqrt(new_coeff / current_coeff);
-		y *= composite_coeff;
-		z *= composite_coeff;
-		w *= composite_coeff;
-	}
-}
+	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map);
 
-void QuatIK::clamp_to_angle(real_t p_angle) {
-	real_t cos_half_angle = Math::cos(0.5f * p_angle);
-	clamp_to_quadrance_angle(cos_half_angle);
-}
+protected:
+	static void _bind_methods();
 
-QuatIK::QuatIK() {
-}
+public:
+	void set_bone_id(BoneId p_bone_id, Skeleton3D *p_skeleton = nullptr);
+	BoneId get_bone_id() const;
+	void set_parent(const Ref<EWBIKShadowBone3D> &p_parent);
+	Ref<EWBIKShadowBone3D> get_parent() const;
+	void set_effector(const Ref<EWBIKBoneEffector3D> &p_effector);
+	Ref<EWBIKBoneEffector3D> get_effector() const;
+	void set_transform(const Transform &p_transform);
+	Transform get_transform() const;
+	void rotate(const Quat &p_rot);
+	void set_global_transform(const Transform &p_transform);
+	Transform get_global_transform() const;
+	void set_initial_transform(Skeleton3D *p_skeleton);
+	void create_effector();
+	bool is_effector() const;
+	Vector<BoneId> get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map) const;
 
- QuatIK::QuatIK(Quat p_quat) {
-	x = p_quat.x;
-	y = p_quat.y;
-	z = p_quat.z;
-	w = p_quat.w;
-}
+	EWBIKShadowBone3D() {}
+	EWBIKShadowBone3D(BoneId p_bone, const Ref<EWBIKShadowBone3D> &p_parent = nullptr);
+	EWBIKShadowBone3D(String p_bone, Skeleton3D *p_skeleton, const Ref<EWBIKShadowBone3D> &p_parent = nullptr);
+	~EWBIKShadowBone3D() {}
+};
 
- QuatIK::QuatIK(float p_x, float p_y, float p_z, float p_w) :
-		Quat(p_x,
-				p_y,
-				p_z,
-				p_w) {
-}
-
-QuatIK::~QuatIK() {
-}
+#endif // EWBIK_SHADOW_BONE_3D_H

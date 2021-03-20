@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  ray.h                                                                */
+/*  ewbik_bone_effector_3d.h                                             */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -27,58 +27,49 @@
 /* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
+#ifndef EWBIK_BONE_EFFECTOR_3D_H
+#define EWBIK_BONE_EFFECTOR_3D_H
 
-#ifndef GODOT_ANIMATION_UNIFIED_BEZIERS_RAY_H
-#define GODOT_ANIMATION_UNIFIED_BEZIERS_RAY_H
+#include "core/object/reference.h"
+#include "scene/3d/skeleton_3d.h"
+#include "ewbik_shadow_bone_3d.h"
 
-#include "core/math/vector3.h"
+class EWBIKShadowBone3D;
 
-struct Ray {
-	Vector3 p0;
-	Vector3 p1;
+class EWBIKBoneEffector3D : public Reference {
+	GDCLASS(EWBIKBoneEffector3D, Reference);
+	friend class EWBIKShadowBone3D;
 
-	Ray();
+private:
+	Ref<EWBIKShadowBone3D> for_bone;
+	Transform target_transform;
+	NodePath target_nodepath = NodePath();
+	bool use_target_node_rotation = false;
+	Transform goal_transform;
+	int32_t num_headings;
+	Vector3 priority = Vector3(1.0, 0.0, 1.0);
+	real_t weight = 1.0;
+	bool follow_x, follow_y, follow_z;
 
-	Ray(Vector3 p_p0, Vector3 p_p1);
+	void update_priorities();
+	void update_goal_transform(Skeleton3D *p_skeleton);
 
-	/**
-     *  adds the specified length to the ray in both directions.
-     */
-	void elongate(float p_amount);
+protected:
+	static void _bind_methods();
 
-	/* Find where this ray intersects a sphere
-        * @param SGVec_3d the center of the sphere to test against.
-        * @param radius radius of the sphere
-        * @param S1 reference to variable in which the first intersection will be placed
-        * @param S2 reference to variable in which the second intersection will be placed
-        * @return number of intersections found;
-        */
-	int intersects_sphere(Vector3 sphereCenter, double radius, Vector3 S1, Vector3 S2);
+public:
+	void set_target_transform(const Transform &p_target_transform);
+	Transform get_target_transform() const;
+	void set_target_node(const NodePath &p_target_node_path);
+	NodePath get_target_node() const;
+	void set_use_target_node_rotation(bool p_use);
+	bool get_use_target_node_rotation() const;
+	bool is_following_translation_only() const;
+	void update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights);
+	void update_tip_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, int32_t &p_index);
 
-	/* Find where this ray intersects a sphere
-        * @param radius radius of the sphere
-        * @param S1 reference to variable in which the first intersection will be placed
-        * @param S2 reference to variable in which the second intersection will be placed
-        * @return number of intersections found;
-        */
-	int intersects_sphere(Vector3 rp1, Vector3 rp2, double radius, Vector3 &S1, Vector3 &S2);
-
-	/**
-	 * sets the values of the given vector to where the 
-	 * tip of this Ray would be if the ray were inverted
-	 * @param vec
-	 * @return the vector that was passed in after modification (for chaining) 
-	 */
-	Vector3 set_to_inverted_tip(Vector3 p_vec) const {
-		Vector3 vec;
-		vec.x = (p0.x - p1.x) + p0.x;
-		vec.y = (p0.y - p1.y) + p0.y;
-		vec.z = (p0.z - p1.z) + p0.z;
-		return vec;
-	}
-	Vector3 heading() const {
-		return p1 - p0;
-	}
+	EWBIKBoneEffector3D(const Ref<EWBIKShadowBone3D> &p_for_bone);
+	~EWBIKBoneEffector3D() {}
 };
 
-#endif //GODOT_ANIMATION_UNIFIED_BEZIERS_RAY_H
+#endif // EWBIK_BONE_EFFECTOR_3D_H

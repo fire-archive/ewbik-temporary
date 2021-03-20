@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  ik_quat.h                                                            */
+/*  ik_transform.h                                                       */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -28,21 +28,75 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef GODOT_ANIMATION_UNIFIED_BEZIERS_IK_QUAT_H
-#define GODOT_ANIMATION_UNIFIED_BEZIERS_IK_QUAT_H
+#ifndef IK_TRANSFORM_H
+#define IK_TRANSFORM_H
 
-#include "core/math/quat.h"
-#include "core/templates/vector.h"
+#include "core/math/transform.h"
+#include "core/templates/list.h"
 
-class QuatIK : public Quat {
+class IKTransform {
+	enum TransformDirty {
+		DIRTY_NONE = 0,
+		DIRTY_VECTORS = 1,
+		DIRTY_LOCAL = 2,
+		DIRTY_GLOBAL = 4
+	};
+
+	mutable Transform global_transform;
+	mutable Transform local_transform;
+	mutable Vector3 rotation;
+	mutable Vector3 scale = Vector3(1, 1, 1);
+
+	mutable int dirty = DIRTY_NONE;
+
+	IKTransform *parent = nullptr;
+	List<IKTransform *> children;
+
+	bool disable_scale = false;
+
+	void _propagate_transform_changed();
+	void _update_local_transform() const;
+
 public:
-	Vector<QuatIK> get_swing_twist(Vector3 p_axis);
-	void clamp_to_quadrance_angle(real_t p_cos_half_angle);
-	void clamp_to_angle(real_t p_angle);
-	inline QuatIK(float p_x, float p_y, float p_z, float p_w);
-	QuatIK(Quat p_quat);
-	QuatIK();
-	~QuatIK();
+	void set_translation(const Vector3 &p_translation);
+	void set_rotation(const Vector3 &p_euler_rad);
+	void set_rotation_degrees(const Vector3 &p_euler_deg);
+	void set_scale(const Vector3 &p_scale);
+	Vector3 get_translation() const;
+	Vector3 get_rotation() const;
+	Vector3 get_rotation_degrees() const;
+	Vector3 get_scale() const;
+
+	void set_transform(const Transform &p_transform);
+	void set_global_transform(const Transform &p_transform);
+	Transform get_transform() const;
+	Transform get_global_transform() const;
+
+	void set_disable_scale(bool p_enabled);
+	bool is_scale_disabled() const;
+
+	void set_parent(IKTransform *p_parent);
+	IKTransform *get_parent() const;
+
+	void rotate(const Vector3 &p_axis, real_t p_angle);
+	void rotate_x(real_t p_angle);
+	void rotate_y(real_t p_angle);
+	void rotate_z(real_t p_angle);
+	void translate(const Vector3 &p_offset);
+
+	void rotate_object_local(const Vector3 &p_axis, real_t p_angle);
+	void scale_object_local(const Vector3 &p_scale);
+	void translate_object_local(const Vector3 &p_offset);
+
+	void global_rotate(const Vector3 &p_axis, real_t p_angle);
+	void global_scale(const Vector3 &p_scale);
+	void global_translate(const Vector3 &p_offset);
+
+	Vector3 to_local(const Vector3 &p_global) const;
+	Vector3 to_global(const Vector3 &p_local) const;
+
+	void orthonormalize();
+	void set_identity();
 };
 
-#endif //GODOT_ANIMATION_UNIFIED_BEZIERS_IK_QUAT_H
+#endif // IK_TRANSFORM_H
