@@ -32,9 +32,9 @@
 #define EWBIK_SEGMENTED_SKELETON_3D_H
 
 #include "core/object/reference.h"
-#include "scene/3d/skeleton_3d.h"
 #include "ewbik_shadow_bone_3d.h"
 #include "math/qcp.h"
+#include "scene/3d/skeleton_3d.h"
 
 struct IKState {
 	Vector<Ref<EWBIKBoneEffector3D>> ordered_effector_list;

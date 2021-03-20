@@ -212,7 +212,7 @@ void SkeletonModification3DEWBIK::setup_modification(SkeletonModificationStack3D
 			set_root_bone_index(roots[0]);
 		}
 	} else if (root_bone_index == -1) {
-			set_root_bone(root_bone);
+		set_root_bone(root_bone);
 	}
 	ERR_FAIL_COND(root_bone.is_empty());
 
@@ -237,7 +237,6 @@ void SkeletonModification3DEWBIK::solve(real_t blending_delta) {
 void SkeletonModification3DEWBIK::iterated_improved_solver() {
 	for (int i = 0; i < ik_iterations; i++) {
 		if (segmented_skeleton->is_root_effector()) {
-
 		} else {
 			segmented_skeleton->update_optimal_rotation(segmented_skeleton->get_root(), state, false, 1);
 		}
@@ -282,7 +281,6 @@ void SkeletonModification3DEWBIK::update_bones_transform() {
 		Ref<EWBIKShadowBone3D> bone = bone_list[bone_i];
 		bone->set_initial_transform(skeleton);
 	}
-
 }
 
 void SkeletonModification3DEWBIK::update_bone_list() {

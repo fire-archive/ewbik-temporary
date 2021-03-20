@@ -59,8 +59,7 @@ int32_t EWBIKSegmentedSkeleton3D::get_effector_direct_descendents_size() const {
 
 BoneId EWBIKSegmentedSkeleton3D::find_root_bone_id(BoneId p_bone) {
 	BoneId root_id = p_bone;
-	while (skeleton->get_bone_parent(root_id) != -1)
-	{
+	while (skeleton->get_bone_parent(root_id) != -1) {
 		root_id = skeleton->get_bone_parent(root_id);
 	}
 
@@ -155,7 +154,6 @@ void EWBIKSegmentedSkeleton3D::generate_default_segments_from_root() {
 			tip->create_effector();
 			break;
 		}
-
 	}
 	update_segmented_skeleton();
 }
@@ -200,7 +198,7 @@ void EWBIKSegmentedSkeleton3D::update_effector_list(Vector<Ref<EWBIKBoneEffector
 
 void EWBIKSegmentedSkeleton3D::update_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes) {
 	Quat best_orientation = p_for_bone->get_global_transform().basis.get_quat();
-	real_t new_dampening = p_translate ?  Math_PI : -1.0;
+	real_t new_dampening = p_translate ? Math_PI : -1.0;
 	if (p_for_bone->get_parent().is_null() || (child_chains.is_empty() && tip->get_effector()->is_following_translation_only())) {
 		p_stabilization_passes = 0;
 	}
