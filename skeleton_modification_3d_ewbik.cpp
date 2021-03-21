@@ -291,6 +291,7 @@ void SkeletonModification3DEWBIK::update_bone_list() {
 	bone_list.clear();
 	segmented_skeleton->get_bone_list(bone_list);
 	bone_list.invert();	
+	print_line("---- Begin bone list");
 	for (int32_t bone_i = 0; bone_i < bone_list.size(); bone_i++) {
 		Ref<EWBIKShadowBone3D> bone = bone_list[bone_i];
 		if (bone.is_null()) {
@@ -300,6 +301,7 @@ void SkeletonModification3DEWBIK::update_bone_list() {
 		String name = skeleton->get_bone_name(bone_id);
 		print_line(vformat("IK bone %s", name));
 	}
+	print_line("---- End bone list");
 }
 
 void SkeletonModification3DEWBIK::update_segments() {
