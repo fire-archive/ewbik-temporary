@@ -50,7 +50,6 @@ private:
 	Ref<IKBone3D> root;
 	Ref<IKBone3D> tip;
 	Vector<Ref<IKBoneChain3D>> child_chains; // Contains only child chains that end with effectors
-	Vector<Ref<IKBoneChain3D>> effector_direct_descendents;
 	int32_t chain_length = 0;
 	HashMap<BoneId, Ref<IKBone3D>> bones_map;
 	Ref<IKBoneChain3D> parent_chain;
@@ -64,7 +63,6 @@ private:
 	BoneId find_root_bone_id(BoneId p_bone);
 	void generate_skeleton_segments(const HashMap<BoneId, Ref<IKBone3D>> &p_map);
 	void update_bone_chain();
-	void update_effector_direct_descendents();
 	void generate_bones_map();
 	Ref<IKBoneChain3D> get_child_segment_containing(const Ref<IKBone3D> &p_bone);
 	void update_tip_headings(IKState &p_state);

@@ -33,7 +33,7 @@
 
 #include "core/object/reference.h"
 #include "core/os/memory.h"
-#include "ewbik_bone_chain_3d.h"
+#include "ewbik_segmented_skeleton_3d.h"
 #include "scene/resources/skeleton_modification_3d.h"
 
 class SkeletonModification3DEWBIK : public SkeletonModification3D {

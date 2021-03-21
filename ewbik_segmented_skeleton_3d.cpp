@@ -49,14 +49,6 @@ bool IKBoneChain3D::is_tip_effector() const {
 	return tip->is_effector();
 }
 
-Vector<Ref<IKBoneChain3D>> IKBoneChain3D::get_effector_direct_descendents() const {
-	return effector_direct_descendents;
-}
-
-int32_t IKBoneChain3D::get_effector_direct_descendents_size() const {
-	return effector_direct_descendents.size();
-}
-
 BoneId IKBoneChain3D::find_root_bone_id(BoneId p_bone) {
 	BoneId root_id = p_bone;
 	while (skeleton->get_bone_parent(root_id) != -1) {
@@ -100,20 +92,7 @@ void IKBoneChain3D::generate_skeleton_segments(const HashMap<BoneId, Ref<IKBone3
 }
 
 void IKBoneChain3D::update_bone_chain() {
-	update_effector_direct_descendents();
 	generate_bones_map();
-}
-
-void IKBoneChain3D::update_effector_direct_descendents() {
-	effector_direct_descendents.clear();
-	if (is_tip_effector()) {
-		effector_direct_descendents.push_back(this);
-	} else {
-		for (int32_t child_i = 0; child_i < child_chains.size(); child_i++) {
-			Ref<IKBoneChain3D> child_segment = child_chains[child_i];
-			effector_direct_descendents.append_array(child_segment->get_effector_direct_descendents());
-		}
-	}
 }
 
 void IKBoneChain3D::generate_bones_map() {
