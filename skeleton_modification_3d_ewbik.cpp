@@ -266,14 +266,14 @@ void SkeletonModification3DEWBIK::update_skeleton() {
 }
 
 void SkeletonModification3DEWBIK::generate_default_effectors() {
-	segmented_skeleton = Ref<EWBIKSegmentedSkeleton3D>(memnew(EWBIKSegmentedSkeleton3D(skeleton, root_bone_index)));
+	segmented_skeleton = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index)));
 	segmented_skeleton->generate_default_segments_from_root();
-	Vector<Ref<EWBIKSegmentedSkeleton3D>> effector_chains = segmented_skeleton->get_effector_direct_descendents();
+	Vector<Ref<IKBoneChain>> effector_chains = segmented_skeleton->get_effector_direct_descendents();
 	effector_count = effector_chains.size();
 	multi_effector.resize(effector_count);
 	for (int32_t chain_i = 0; chain_i < effector_count; chain_i++) {
 		multi_effector.write[chain_i] = effector_chains[chain_i]->get_tip();
-		Ref<EWBIKSegmentedSkeleton3D> segment = effector_chains[chain_i];
+		Ref<IKBoneChain> segment = effector_chains[chain_i];
 	}
 	update_effectors_map();
 	update_bone_list();
@@ -295,7 +295,7 @@ void SkeletonModification3DEWBIK::update_bone_list() {
 void SkeletonModification3DEWBIK::update_segments() {
 	if (effector_count) {
 		update_effectors_map();
-		segmented_skeleton = Ref<EWBIKSegmentedSkeleton3D>(memnew(EWBIKSegmentedSkeleton3D(skeleton, root_bone_index, effectors_map)));
+		segmented_skeleton = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index, effectors_map)));
 		update_bone_list();
 	}
 }

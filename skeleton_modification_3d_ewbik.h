@@ -43,7 +43,7 @@ private:
 	Skeleton3D *skeleton = nullptr;
 	String root_bone;
 	BoneId root_bone_index = -1;
-	Ref<EWBIKSegmentedSkeleton3D> segmented_skeleton;
+	Ref<IKBoneChain> segmented_skeleton;
 	int32_t effector_count = 0;
 	Vector<Ref<EWBIKShadowBone3D>> multi_effector;
 	HashMap<BoneId, Ref<EWBIKShadowBone3D>> effectors_map;
