@@ -37,10 +37,6 @@ Ref<EWBIKShadowBone3D> EWBIKSegmentedSkeleton3D::get_tip() const {
 	return tip;
 }
 
-int32_t EWBIKSegmentedSkeleton3D::get_chain_length() const {
-	return chain_length;
-}
-
 bool EWBIKSegmentedSkeleton3D::is_root_effector() const {
 	return root->is_effector();
 }
@@ -70,9 +66,7 @@ void EWBIKSegmentedSkeleton3D::generate_skeleton_segments(const HashMap<BoneId, 
 	child_chains.clear();
 
 	Ref<EWBIKShadowBone3D> tempTip = root;
-	chain_length = 0;
 	while (true) {
-		chain_length++;
 		Vector<BoneId> children_with_effector_descendants = tempTip->get_children_with_effector_descendants(skeleton, p_map);
 		if (children_with_effector_descendants.size() > 1 || tempTip->is_effector()) {
 			tip = tempTip;
@@ -132,9 +126,7 @@ void EWBIKSegmentedSkeleton3D::generate_default_segments_from_root() {
 	child_chains.clear();
 
 	Ref<EWBIKShadowBone3D> tempTip = root;
-	chain_length = 0;
 	while (true) {
-		chain_length++;
 		Vector<BoneId> children = skeleton->get_bone_children(tempTip->get_bone_id());
 		if (children.size() > 1) {
 			tip = tempTip;

@@ -77,7 +77,6 @@ protected:
 public:
 	Ref<EWBIKShadowBone3D> get_root() const;
 	Ref<EWBIKShadowBone3D> get_tip() const;
-	int32_t get_chain_length() const;
 	bool is_root_effector() const;
 	bool is_tip_effector() const;
 	Vector<Ref<EWBIKSegmentedSkeleton3D>> get_effector_direct_descendents() const;
