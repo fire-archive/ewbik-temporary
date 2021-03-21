@@ -70,6 +70,9 @@ private:
 	void update_tip_headings(IKState &p_state);
 	real_t get_manual_rmsd(const IKState &p_state) const;
 	void set_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state);
+	void build_bone_chain(BoneId p_root, Vector<BoneId> p_current, List<Vector<BoneId>> &r_visited);
+	void merge_with_child_if_appropriate();
+	void filter_and_merge_child_chains();
 
 protected:
 	static void _bind_methods();

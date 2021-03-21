@@ -261,6 +261,7 @@ void SkeletonModification3DEWBIK::update_skeleton() {
 	segmented_skeleton->update_target_headings(state);
 	state.tip_headings.resize(state.heading_weights.size());
 	notify_property_list_changed();
+	update_bone_list();
 
 	is_dirty = false;
 }
@@ -289,7 +290,16 @@ void SkeletonModification3DEWBIK::update_bones_transform() {
 void SkeletonModification3DEWBIK::update_bone_list() {
 	bone_list.clear();
 	segmented_skeleton->get_bone_list(bone_list);
-	bone_list.invert();
+	bone_list.invert();	
+	for (int32_t bone_i = 0; bone_i < bone_list.size(); bone_i++) {
+		Ref<EWBIKShadowBone3D> bone = bone_list[bone_i];
+		if (bone.is_null()) {
+			continue;
+		}
+		BoneId bone_id = bone->get_bone_id();
+		String name = skeleton->get_bone_name(bone_id);
+		print_line(vformat("IK bone %s", name));
+	}
 }
 
 void SkeletonModification3DEWBIK::update_segments() {
