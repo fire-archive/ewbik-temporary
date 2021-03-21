@@ -33,7 +33,7 @@
 
 #include "core/object/reference.h"
 #include "core/os/memory.h"
-#include "ewbik_segmented_skeleton_3d.h"
+#include "ewbik_bone_chain_3d.h"
 #include "scene/resources/skeleton_modification_3d.h"
 
 class SkeletonModification3DEWBIK : public SkeletonModification3D {
@@ -43,7 +43,7 @@ private:
 	Skeleton3D *skeleton = nullptr;
 	String root_bone;
 	BoneId root_bone_index = -1;
-	Ref<IKBoneChain> segmented_skeleton;
+	Ref<IKBoneChain> bone_chain;
 	int32_t effector_count = 0;
 	Vector<Ref<IKBone>> multi_effector;
 	HashMap<BoneId, Ref<IKBone>> effectors_map;

@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  ewbik_segmented_skeleton_3d.h                                        */
+/*  ewbik_bone_chain_3d.h                                        */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -63,7 +63,7 @@ private:
 
 	BoneId find_root_bone_id(BoneId p_bone);
 	void generate_skeleton_segments(const HashMap<BoneId, Ref<IKBone>> &p_map);
-	void update_segmented_skeleton();
+	void update_bone_chain();
 	void update_effector_direct_descendents();
 	void generate_bones_map();
 	Ref<IKBoneChain> get_child_segment_containing(const Ref<IKBone> &p_bone);

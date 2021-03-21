@@ -229,7 +229,7 @@ void SkeletonModification3DEWBIK::solve(real_t blending_delta) {
 		return; // Skip solving
 	}
 
-	if (effector_count && segmented_skeleton.is_valid() && segmented_skeleton->get_effector_direct_descendents_size() > 0) {
+	if (effector_count && bone_chain.is_valid() && bone_chain->get_effector_direct_descendents_size() > 0) {
 		update_bones_transform();
 		iterated_improved_solver();
 		// TODO: Apply bone chains
@@ -238,9 +238,9 @@ void SkeletonModification3DEWBIK::solve(real_t blending_delta) {
 
 void SkeletonModification3DEWBIK::iterated_improved_solver() {
 	for (int i = 0; i < ik_iterations; i++) {
-		if (segmented_skeleton->is_root_effector()) {
+		if (bone_chain->is_root_effector()) {
 		} else {
-			segmented_skeleton->update_optimal_rotation(segmented_skeleton->get_root(), state, false, 1);
+			bone_chain->update_optimal_rotation(bone_chain->get_root(), state, false, 1);
 		}
 	}
 }
@@ -255,10 +255,10 @@ void SkeletonModification3DEWBIK::update_skeleton() {
 	} else {
 		generate_default_effectors();
 	}
-	segmented_skeleton->update_effector_list(state.ordered_effector_list);
+	bone_chain->update_effector_list(state.ordered_effector_list);
 	state.target_headings.clear();
 	state.heading_weights.clear();
-	segmented_skeleton->update_target_headings(state);
+	bone_chain->update_target_headings(state);
 	state.tip_headings.resize(state.heading_weights.size());
 	notify_property_list_changed();
 
@@ -266,9 +266,9 @@ void SkeletonModification3DEWBIK::update_skeleton() {
 }
 
 void SkeletonModification3DEWBIK::generate_default_effectors() {
-	segmented_skeleton = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index)));
-	segmented_skeleton->generate_default_segments_from_root();
-	Vector<Ref<IKBoneChain>> effector_chains = segmented_skeleton->get_effector_direct_descendents();
+	bone_chain = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index)));
+	bone_chain->generate_default_segments_from_root();
+	Vector<Ref<IKBoneChain>> effector_chains = bone_chain->get_effector_direct_descendents();
 	effector_count = effector_chains.size();
 	multi_effector.resize(effector_count);
 	for (int32_t chain_i = 0; chain_i < effector_count; chain_i++) {
@@ -288,14 +288,14 @@ void SkeletonModification3DEWBIK::update_bones_transform() {
 
 void SkeletonModification3DEWBIK::update_bone_list() {
 	bone_list.clear();
-	segmented_skeleton->get_bone_list(bone_list);
+	bone_chain->get_bone_list(bone_list);
 	bone_list.invert();
 }
 
 void SkeletonModification3DEWBIK::update_segments() {
 	if (effector_count) {
 		update_effectors_map();
-		segmented_skeleton = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index, effectors_map)));
+		bone_chain = Ref<IKBoneChain>(memnew(IKBoneChain(skeleton, root_bone_index, effectors_map)));
 		update_bone_list();
 	}
 }
