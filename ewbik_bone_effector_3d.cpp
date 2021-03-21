@@ -30,35 +30,35 @@
 
 #include "ewbik_bone_effector_3d.h"
 
-void EWBIKBoneEffector3D::set_target_transform(const Transform &p_target_transform) {
+void IKEffector::set_target_transform(const Transform &p_target_transform) {
 	target_transform = p_target_transform;
 }
 
-Transform EWBIKBoneEffector3D::get_target_transform() const {
+Transform IKEffector::get_target_transform() const {
 	return target_transform;
 }
 
-void EWBIKBoneEffector3D::set_target_node(const NodePath &p_target_node_path) {
+void IKEffector::set_target_node(const NodePath &p_target_node_path) {
 	target_nodepath = p_target_node_path;
 }
 
-NodePath EWBIKBoneEffector3D::get_target_node() const {
+NodePath IKEffector::get_target_node() const {
 	return target_nodepath;
 }
 
-void EWBIKBoneEffector3D::set_use_target_node_rotation(bool p_use) {
+void IKEffector::set_use_target_node_rotation(bool p_use) {
 	use_target_node_rotation = p_use;
 }
 
-bool EWBIKBoneEffector3D::get_use_target_node_rotation() const {
+bool IKEffector::get_use_target_node_rotation() const {
 	return use_target_node_rotation;
 }
 
-bool EWBIKBoneEffector3D::is_following_translation_only() const {
+bool IKEffector::is_following_translation_only() const {
 	return !(follow_x || follow_y || follow_z);
 }
 
-void EWBIKBoneEffector3D::update_goal_transform(Skeleton3D *p_skeleton) {
+void IKEffector::update_goal_transform(Skeleton3D *p_skeleton) {
 	goal_transform = Transform();
 	Node *node = p_skeleton->get_node_or_null(target_nodepath);
 	if (node) {
@@ -72,7 +72,7 @@ void EWBIKBoneEffector3D::update_goal_transform(Skeleton3D *p_skeleton) {
 	goal_transform = target_transform * goal_transform;
 }
 
-void EWBIKBoneEffector3D::update_priorities() {
+void IKEffector::update_priorities() {
 	follow_x = priority.x > 0.0;
 	follow_y = priority.y > 0.0;
 	follow_z = priority.z > 0.0;
@@ -89,7 +89,7 @@ void EWBIKBoneEffector3D::update_priorities() {
 	}
 }
 
-void EWBIKBoneEffector3D::update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights) {
+void IKEffector::update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights) {
 	PackedVector3Array target_headings;
 	target_headings.resize(num_headings);
 	Vector3 origin = p_skeleton->get_bone_pose(for_bone->get_bone_id()).origin;
@@ -128,7 +128,7 @@ void EWBIKBoneEffector3D::update_target_headings(Skeleton3D *p_skeleton, PackedV
 	p_weights.append_array(weights);
 }
 
-void EWBIKBoneEffector3D::update_tip_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, int32_t &p_index) {
+void IKEffector::update_tip_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, int32_t &p_index) {
 	PackedVector3Array tip_headings;
 	tip_headings.resize(num_headings);
 	Vector3 origin = p_skeleton->get_bone_pose(for_bone->get_bone_id()).origin;
@@ -161,19 +161,19 @@ void EWBIKBoneEffector3D::update_tip_headings(Skeleton3D *p_skeleton, PackedVect
 	p_headings.append_array(tip_headings);
 }
 
-void EWBIKBoneEffector3D::_bind_methods() {
+void IKEffector::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_target_transform", "transform"),
-			&EWBIKBoneEffector3D::set_target_transform);
+			&IKEffector::set_target_transform);
 	ClassDB::bind_method(D_METHOD("get_target_transform"),
-			&EWBIKBoneEffector3D::get_target_transform);
+			&IKEffector::get_target_transform);
 
 	ClassDB::bind_method(D_METHOD("set_target_node", "node"),
-			&EWBIKBoneEffector3D::set_target_node);
+			&IKEffector::set_target_node);
 	ClassDB::bind_method(D_METHOD("get_target_node"),
-			&EWBIKBoneEffector3D::get_target_node);
+			&IKEffector::get_target_node);
 }
 
-EWBIKBoneEffector3D::EWBIKBoneEffector3D(const Ref<IKBone> &p_for_bone) {
+IKEffector::IKEffector(const Ref<IKBone> &p_for_bone) {
 	for_bone = p_for_bone;
 	update_priorities();
 }

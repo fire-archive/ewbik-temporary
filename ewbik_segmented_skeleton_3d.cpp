@@ -184,7 +184,7 @@ void IKBoneChain::get_bone_list(Vector<Ref<IKBone>> &p_list) const {
 	}
 }
 
-void IKBoneChain::update_effector_list(Vector<Ref<EWBIKBoneEffector3D>> &p_list) {
+void IKBoneChain::update_effector_list(Vector<Ref<IKEffector>> &p_list) {
 	idx_eff_i = p_list.size();
 	for (int32_t chain_i = 0; chain_i < child_chains.size(); chain_i++) {
 		Ref<IKBoneChain> chain = child_chains[chain_i];
@@ -244,7 +244,7 @@ real_t IKBoneChain::get_manual_rmsd(const IKState &p_state) const {
 void IKBoneChain::update_target_headings(IKState &p_state) {
 	idx_headings_i = p_state.heading_weights.size();
 	for (int32_t effector_i = idx_eff_i; effector_i < idx_eff_f; effector_i++) {
-		Ref<EWBIKBoneEffector3D> effector = p_state.ordered_effector_list[effector_i];
+		Ref<IKEffector> effector = p_state.ordered_effector_list[effector_i];
 		effector->update_target_headings(skeleton, p_state.target_headings, p_state.heading_weights);
 	}
 	idx_headings_f = p_state.heading_weights.size();
@@ -253,7 +253,7 @@ void IKBoneChain::update_target_headings(IKState &p_state) {
 void IKBoneChain::update_tip_headings(IKState &p_state) {
 	int32_t index = idx_headings_i; // Index is incremented by update_tip_headings function
 	for (int32_t effector_i = idx_eff_i; effector_i < idx_eff_f; effector_i++) {
-		Ref<EWBIKBoneEffector3D> effector = p_state.ordered_effector_list[effector_i];
+		Ref<IKEffector> effector = p_state.ordered_effector_list[effector_i];
 		effector->update_tip_headings(skeleton, p_state.tip_headings, index);
 	}
 }

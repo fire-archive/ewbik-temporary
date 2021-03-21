@@ -36,7 +36,7 @@
 #include "math/ik_transform.h"
 #include "scene/3d/skeleton_3d.h"
 
-class EWBIKBoneEffector3D;
+class IKEffector;
 
 class IKBone : public Reference {
 	GDCLASS(IKBone, Reference);
@@ -45,7 +45,7 @@ private:
 	BoneId for_bone = -1;
 	Ref<IKBone> parent = nullptr;
 	Vector<Ref<IKBone>> children;
-	Ref<EWBIKBoneEffector3D> effector = nullptr;
+	Ref<IKEffector> effector = nullptr;
 	IKTransform xform;
 
 	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone>> &p_map);
@@ -58,8 +58,8 @@ public:
 	BoneId get_bone_id() const;
 	void set_parent(const Ref<IKBone> &p_parent);
 	Ref<IKBone> get_parent() const;
-	void set_effector(const Ref<EWBIKBoneEffector3D> &p_effector);
-	Ref<EWBIKBoneEffector3D> get_effector() const;
+	void set_effector(const Ref<IKEffector> &p_effector);
+	Ref<IKEffector> get_effector() const;
 	void set_transform(const Transform &p_transform);
 	Transform get_transform() const;
 	void rotate(const Quat &p_rot);

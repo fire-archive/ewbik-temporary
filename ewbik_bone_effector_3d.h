@@ -36,8 +36,8 @@
 
 class IKBone;
 
-class EWBIKBoneEffector3D : public Reference {
-	GDCLASS(EWBIKBoneEffector3D, Reference);
+class IKEffector : public Reference {
+	GDCLASS(IKEffector, Reference);
 	friend class IKBone;
 
 private:
@@ -68,8 +68,8 @@ public:
 	void update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights);
 	void update_tip_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, int32_t &p_index);
 
-	EWBIKBoneEffector3D(const Ref<IKBone> &p_for_bone);
-	~EWBIKBoneEffector3D() {}
+	IKEffector(const Ref<IKBone> &p_for_bone);
+	~IKEffector() {}
 };
 
 #endif // EWBIK_BONE_EFFECTOR_3D_H

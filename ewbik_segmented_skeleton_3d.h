@@ -37,7 +37,7 @@
 #include "scene/3d/skeleton_3d.h"
 
 struct IKState {
-	Vector<Ref<EWBIKBoneEffector3D>> ordered_effector_list;
+	Vector<Ref<IKEffector>> ordered_effector_list;
 	PackedVector3Array target_headings;
 	PackedVector3Array tip_headings;
 	Vector<real_t> heading_weights;
@@ -85,7 +85,7 @@ public:
 	void get_bone_list(Vector<Ref<IKBone>> &p_list) const;
 	void generate_default_segments_from_root();
 	void update_optimal_rotation(Ref<IKBone> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes);
-	void update_effector_list(Vector<Ref<EWBIKBoneEffector3D>> &p_list);
+	void update_effector_list(Vector<Ref<IKEffector>> &p_list);
 	void update_target_headings(IKState &p_state);
 
 	IKBoneChain() {}

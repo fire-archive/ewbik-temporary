@@ -83,7 +83,7 @@ int32_t SkeletonModification3DEWBIK::get_effector_count() const {
 void SkeletonModification3DEWBIK::add_effector(const String &p_name, const NodePath &p_target_node, bool p_use_node_rot,
 		const Transform &p_target_xform) {
 	Ref<IKBone> effector_bone = Ref<IKBone>(memnew(IKBone(p_name, skeleton)));
-	Ref<EWBIKBoneEffector3D> effector = Ref<EWBIKBoneEffector3D>(memnew(EWBIKBoneEffector3D(effector_bone)));
+	Ref<IKEffector> effector = Ref<IKEffector>(memnew(IKEffector(effector_bone)));
 	effector->set_target_node(p_target_node);
 	effector->set_use_target_node_rotation(p_use_node_rot);
 	effector->set_target_transform(p_target_xform);
