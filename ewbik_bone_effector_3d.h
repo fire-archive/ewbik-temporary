@@ -34,14 +34,14 @@
 #include "ewbik_shadow_bone_3d.h"
 #include "scene/3d/skeleton_3d.h"
 
-class IKBone3D;
+class EWBIKShadowBone3D;
 
-class IKEffector3D : public Reference {
-	GDCLASS(IKEffector3D, Reference);
-	friend class IKBone3D;
+class EWBIKBoneEffector3D : public Reference {
+	GDCLASS(EWBIKBoneEffector3D, Reference);
+	friend class EWBIKShadowBone3D;
 
 private:
-	Ref<IKBone3D> for_bone;
+	Ref<EWBIKShadowBone3D> for_bone;
 	Transform target_transform;
 	NodePath target_nodepath = NodePath();
 	bool use_target_node_rotation = false;
@@ -68,8 +68,8 @@ public:
 	void update_target_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, Vector<real_t> &p_weights);
 	void update_tip_headings(Skeleton3D *p_skeleton, PackedVector3Array &p_headings, int32_t &p_index);
 
-	IKEffector3D(const Ref<IKBone3D> &p_for_bone);
-	~IKEffector3D() {}
+	EWBIKBoneEffector3D(const Ref<EWBIKShadowBone3D> &p_for_bone);
+	~EWBIKBoneEffector3D() {}
 };
 
 #endif // EWBIK_BONE_EFFECTOR_3D_H
