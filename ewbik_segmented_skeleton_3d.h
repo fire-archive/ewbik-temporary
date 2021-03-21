@@ -47,12 +47,12 @@ class IKBoneChain : public Reference {
 	GDCLASS(IKBoneChain, Reference);
 
 private:
-	Ref<EWBIKShadowBone3D> root;
-	Ref<EWBIKShadowBone3D> tip;
+	Ref<IKBone> root;
+	Ref<IKBone> tip;
 	Vector<Ref<IKBoneChain>> child_chains; // Contains only child chains that end with effectors
 	Vector<Ref<IKBoneChain>> effector_direct_descendents;
 	int32_t chain_length = 0;
-	HashMap<BoneId, Ref<EWBIKShadowBone3D>> bones_map;
+	HashMap<BoneId, Ref<IKBone>> bones_map;
 	Ref<IKBoneChain> parent_chain;
 	int32_t idx_eff_i = -1;
 	int32_t idx_eff_f = -1;
@@ -62,36 +62,36 @@ private:
 	Skeleton3D *skeleton = nullptr;
 
 	BoneId find_root_bone_id(BoneId p_bone);
-	void generate_skeleton_segments(const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map);
+	void generate_skeleton_segments(const HashMap<BoneId, Ref<IKBone>> &p_map);
 	void update_segmented_skeleton();
 	void update_effector_direct_descendents();
 	void generate_bones_map();
-	Ref<IKBoneChain> get_child_segment_containing(const Ref<EWBIKShadowBone3D> &p_bone);
+	Ref<IKBoneChain> get_child_segment_containing(const Ref<IKBone> &p_bone);
 	void update_tip_headings(IKState &p_state);
 	real_t get_manual_rmsd(const IKState &p_state) const;
-	void set_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state);
+	void set_optimal_rotation(Ref<IKBone> p_for_bone, IKState &p_state);
 
 protected:
 	static void _bind_methods();
 
 public:
-	Ref<EWBIKShadowBone3D> get_root() const;
-	Ref<EWBIKShadowBone3D> get_tip() const;
+	Ref<IKBone> get_root() const;
+	Ref<IKBone> get_tip() const;
 	int32_t get_chain_length() const;
 	bool is_root_effector() const;
 	bool is_tip_effector() const;
 	Vector<Ref<IKBoneChain>> get_effector_direct_descendents() const;
 	int32_t get_effector_direct_descendents_size() const;
-	void get_bone_list(Vector<Ref<EWBIKShadowBone3D>> &p_list) const;
+	void get_bone_list(Vector<Ref<IKBone>> &p_list) const;
 	void generate_default_segments_from_root();
-	void update_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes);
+	void update_optimal_rotation(Ref<IKBone> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes);
 	void update_effector_list(Vector<Ref<EWBIKBoneEffector3D>> &p_list);
 	void update_target_headings(IKState &p_state);
 
 	IKBoneChain() {}
 	IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent = nullptr);
 	IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone,
-			const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map, const Ref<IKBoneChain> &p_parent = nullptr);
+			const HashMap<BoneId, Ref<IKBone>> &p_map, const Ref<IKBoneChain> &p_parent = nullptr);
 	~IKBoneChain() {}
 };
 

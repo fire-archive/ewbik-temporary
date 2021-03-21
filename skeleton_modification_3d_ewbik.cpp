@@ -66,7 +66,7 @@ void SkeletonModification3DEWBIK::set_root_bone_index(BoneId p_index) {
 void SkeletonModification3DEWBIK::set_effector_count(int32_t p_value) {
 	multi_effector.resize(p_value);
 	for (int32_t i = effector_count; i < p_value; i++) {
-		Ref<EWBIKShadowBone3D> bone = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D()));
+		Ref<IKBone> bone = Ref<IKBone>(memnew(IKBone()));
 		bone->create_effector();
 		multi_effector.write[i] = bone;
 	}
@@ -82,7 +82,7 @@ int32_t SkeletonModification3DEWBIK::get_effector_count() const {
 
 void SkeletonModification3DEWBIK::add_effector(const String &p_name, const NodePath &p_target_node, bool p_use_node_rot,
 		const Transform &p_target_xform) {
-	Ref<EWBIKShadowBone3D> effector_bone = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D(p_name, skeleton)));
+	Ref<IKBone> effector_bone = Ref<IKBone>(memnew(IKBone(p_name, skeleton)));
 	Ref<EWBIKBoneEffector3D> effector = Ref<EWBIKBoneEffector3D>(memnew(EWBIKBoneEffector3D(effector_bone)));
 	effector->set_target_node(p_target_node);
 	effector->set_use_target_node_rotation(p_use_node_rot);
@@ -94,13 +94,13 @@ void SkeletonModification3DEWBIK::add_effector(const String &p_name, const NodeP
 	is_dirty = true;
 }
 
-Ref<EWBIKShadowBone3D> SkeletonModification3DEWBIK::get_effector(int32_t p_index) const {
+Ref<IKBone> SkeletonModification3DEWBIK::get_effector(int32_t p_index) const {
 	ERR_FAIL_INDEX_V(p_index, multi_effector.size(), NULL);
-	Ref<EWBIKShadowBone3D> effector = multi_effector[p_index];
+	Ref<IKBone> effector = multi_effector[p_index];
 	return effector;
 }
 
-void SkeletonModification3DEWBIK::set_effector(int32_t p_index, const Ref<EWBIKShadowBone3D> &p_effector) {
+void SkeletonModification3DEWBIK::set_effector(int32_t p_index, const Ref<IKBone> &p_effector) {
 	ERR_FAIL_COND(p_effector.is_null());
 	ERR_FAIL_INDEX(p_index, multi_effector.size());
 	multi_effector.write[p_index] = p_effector;
@@ -156,7 +156,7 @@ bool SkeletonModification3DEWBIK::get_effector_use_node_rotation(int32_t p_index
 	return multi_effector[p_index]->get_effector()->get_use_target_node_rotation();
 }
 
-Vector<Ref<EWBIKShadowBone3D>> SkeletonModification3DEWBIK::get_bone_effectors() const {
+Vector<Ref<IKBone>> SkeletonModification3DEWBIK::get_bone_effectors() const {
 	return multi_effector;
 }
 
@@ -281,7 +281,7 @@ void SkeletonModification3DEWBIK::generate_default_effectors() {
 
 void SkeletonModification3DEWBIK::update_bones_transform() {
 	for (int32_t bone_i = 0; bone_i < bone_list.size(); bone_i++) {
-		Ref<EWBIKShadowBone3D> bone = bone_list[bone_i];
+		Ref<IKBone> bone = bone_list[bone_i];
 		bone->set_initial_transform(skeleton);
 	}
 }
@@ -303,7 +303,7 @@ void SkeletonModification3DEWBIK::update_segments() {
 void SkeletonModification3DEWBIK::update_effectors_map() {
 	effectors_map.clear();
 	for (int32_t index = 0; index < effector_count; index++) {
-		Ref<EWBIKShadowBone3D> effector_bone = multi_effector[index];
+		Ref<IKBone> effector_bone = multi_effector[index];
 		effectors_map[effector_bone->get_bone_id()] = effector_bone;
 	}
 }
@@ -389,7 +389,7 @@ bool SkeletonModification3DEWBIK::_set(const StringName &p_name, const Variant &
 		int index = name.get_slicec('/', 1).to_int();
 		String what = name.get_slicec('/', 2);
 		ERR_FAIL_INDEX_V(index, effector_count, false);
-		Ref<EWBIKShadowBone3D> effector = get_effector(index);
+		Ref<IKBone> effector = get_effector(index);
 		if (effector.is_null()) {
 			effector.instance();
 			effector->create_effector();

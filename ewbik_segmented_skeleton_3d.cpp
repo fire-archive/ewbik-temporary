@@ -30,10 +30,10 @@
 
 #include "ewbik_segmented_skeleton_3d.h"
 
-Ref<EWBIKShadowBone3D> IKBoneChain::get_root() const {
+Ref<IKBone> IKBoneChain::get_root() const {
 	return root;
 }
-Ref<EWBIKShadowBone3D> IKBoneChain::get_tip() const {
+Ref<IKBone> IKBoneChain::get_tip() const {
 	return tip;
 }
 
@@ -66,10 +66,10 @@ BoneId IKBoneChain::find_root_bone_id(BoneId p_bone) {
 	return root_id;
 }
 
-void IKBoneChain::generate_skeleton_segments(const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map) {
+void IKBoneChain::generate_skeleton_segments(const HashMap<BoneId, Ref<IKBone>> &p_map) {
 	child_chains.clear();
 
-	Ref<EWBIKShadowBone3D> tempTip = root;
+	Ref<IKBone> tempTip = root;
 	chain_length = 0;
 	while (true) {
 		chain_length++;
@@ -84,11 +84,11 @@ void IKBoneChain::generate_skeleton_segments(const HashMap<BoneId, Ref<EWBIKShad
 		} else if (children_with_effector_descendants.size() == 1) {
 			BoneId bone_id = children_with_effector_descendants[0];
 			if (p_map.has(bone_id)) {
-				Ref<EWBIKShadowBone3D> next = p_map[bone_id];
+				Ref<IKBone> next = p_map[bone_id];
 				next->set_parent(tempTip);
 				tempTip = next;
 			} else {
-				Ref<EWBIKShadowBone3D> next = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D(bone_id, tempTip)));
+				Ref<IKBone> next = Ref<IKBone>(memnew(IKBone(bone_id, tempTip)));
 				tempTip = next;
 			}
 		} else {
@@ -118,8 +118,8 @@ void IKBoneChain::update_effector_direct_descendents() {
 
 void IKBoneChain::generate_bones_map() {
 	bones_map.clear();
-	Ref<EWBIKShadowBone3D> current_bone = tip;
-	Ref<EWBIKShadowBone3D> stop_on = root;
+	Ref<IKBone> current_bone = tip;
+	Ref<IKBone> stop_on = root;
 	while (current_bone.is_valid()) {
 		bones_map[current_bone->get_bone_id()] = current_bone;
 		if (current_bone == stop_on)
@@ -131,7 +131,7 @@ void IKBoneChain::generate_bones_map() {
 void IKBoneChain::generate_default_segments_from_root() {
 	child_chains.clear();
 
-	Ref<EWBIKShadowBone3D> tempTip = root;
+	Ref<IKBone> tempTip = root;
 	chain_length = 0;
 	while (true) {
 		chain_length++;
@@ -147,7 +147,7 @@ void IKBoneChain::generate_default_segments_from_root() {
 			break;
 		} else if (children.size() == 1) {
 			BoneId bone_id = children[0];
-			Ref<EWBIKShadowBone3D> next = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D(bone_id, tempTip)));
+			Ref<IKBone> next = Ref<IKBone>(memnew(IKBone(bone_id, tempTip)));
 			tempTip = next;
 		} else {
 			tip = tempTip;
@@ -158,7 +158,7 @@ void IKBoneChain::generate_default_segments_from_root() {
 	update_segmented_skeleton();
 }
 
-Ref<IKBoneChain> IKBoneChain::get_child_segment_containing(const Ref<EWBIKShadowBone3D> &p_bone) {
+Ref<IKBoneChain> IKBoneChain::get_child_segment_containing(const Ref<IKBone> &p_bone) {
 	if (bones_map.has(p_bone->get_bone_id())) {
 		return this;
 	} else {
@@ -171,11 +171,11 @@ Ref<IKBoneChain> IKBoneChain::get_child_segment_containing(const Ref<EWBIKShadow
 	return nullptr;
 }
 
-void IKBoneChain::get_bone_list(Vector<Ref<EWBIKShadowBone3D>> &p_list) const {
+void IKBoneChain::get_bone_list(Vector<Ref<IKBone>> &p_list) const {
 	for (int32_t child_i = 0; child_i < child_chains.size(); child_i++) {
 		child_chains[child_i]->get_bone_list(p_list);
 	}
-	Ref<EWBIKShadowBone3D> current_bone = tip;
+	Ref<IKBone> current_bone = tip;
 	while (current_bone.is_valid()) {
 		p_list.push_back(current_bone);
 		if (current_bone == root)
@@ -196,7 +196,7 @@ void IKBoneChain::update_effector_list(Vector<Ref<EWBIKBoneEffector3D>> &p_list)
 	idx_eff_f = p_list.size();
 }
 
-void IKBoneChain::update_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes) {
+void IKBoneChain::update_optimal_rotation(Ref<IKBone> p_for_bone, IKState &p_state, bool p_translate, int32_t p_stabilization_passes) {
 	Quat best_orientation = p_for_bone->get_global_transform().basis.get_quat();
 	real_t new_dampening = p_translate ? Math_PI : -1.0;
 	if (p_for_bone->get_parent().is_null() || (child_chains.is_empty() && tip->get_effector()->is_following_translation_only())) {
@@ -216,7 +216,7 @@ void IKBoneChain::update_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKS
 	}
 }
 
-void IKBoneChain::set_optimal_rotation(Ref<EWBIKShadowBone3D> p_for_bone, IKState &p_state) {
+void IKBoneChain::set_optimal_rotation(Ref<IKBone> p_for_bone, IKState &p_state) {
 	QCP qcp;
 	Vector3 translation;
 	Quat rot = qcp.calc_optimal_rotation(p_state.tip_headings, p_state.target_headings, p_state.heading_weights, true, translation);
@@ -266,7 +266,7 @@ void IKBoneChain::_bind_methods() {
 IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent) {
 	skeleton = p_skeleton;
 	BoneId root_id = find_root_bone_id(p_root_bone);
-	root = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D(root_id)));
+	root = Ref<IKBone>(memnew(IKBone(root_id)));
 	if (p_parent.is_valid()) {
 		parent_chain = p_parent;
 		root->set_parent(p_parent->get_tip());
@@ -274,13 +274,13 @@ IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<I
 }
 
 IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone,
-		const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map, const Ref<IKBoneChain> &p_parent) {
+		const HashMap<BoneId, Ref<IKBone>> &p_map, const Ref<IKBoneChain> &p_parent) {
 	skeleton = p_skeleton;
 	BoneId root_id = find_root_bone_id(p_root_bone);
 	if (p_map.has(root_id)) {
 		root = p_map[root_id];
 	} else {
-		root = Ref<EWBIKShadowBone3D>(memnew(EWBIKShadowBone3D(root_id)));
+		root = Ref<IKBone>(memnew(IKBone(root_id)));
 	}
 	if (p_parent.is_valid()) {
 		parent_chain = p_parent;

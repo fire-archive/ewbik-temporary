@@ -173,7 +173,7 @@ void EWBIKBoneEffector3D::_bind_methods() {
 			&EWBIKBoneEffector3D::get_target_node);
 }
 
-EWBIKBoneEffector3D::EWBIKBoneEffector3D(const Ref<EWBIKShadowBone3D> &p_for_bone) {
+EWBIKBoneEffector3D::EWBIKBoneEffector3D(const Ref<IKBone> &p_for_bone) {
 	for_bone = p_for_bone;
 	update_priorities();
 }

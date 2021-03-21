@@ -38,17 +38,17 @@
 
 class EWBIKBoneEffector3D;
 
-class EWBIKShadowBone3D : public Reference {
-	GDCLASS(EWBIKShadowBone3D, Reference);
+class IKBone : public Reference {
+	GDCLASS(IKBone, Reference);
 
 private:
 	BoneId for_bone = -1;
-	Ref<EWBIKShadowBone3D> parent = nullptr;
-	Vector<Ref<EWBIKShadowBone3D>> children;
+	Ref<IKBone> parent = nullptr;
+	Vector<Ref<IKBone>> children;
 	Ref<EWBIKBoneEffector3D> effector = nullptr;
 	IKTransform xform;
 
-	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map);
+	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone>> &p_map);
 
 protected:
 	static void _bind_methods();
@@ -56,8 +56,8 @@ protected:
 public:
 	void set_bone_id(BoneId p_bone_id, Skeleton3D *p_skeleton = nullptr);
 	BoneId get_bone_id() const;
-	void set_parent(const Ref<EWBIKShadowBone3D> &p_parent);
-	Ref<EWBIKShadowBone3D> get_parent() const;
+	void set_parent(const Ref<IKBone> &p_parent);
+	Ref<IKBone> get_parent() const;
 	void set_effector(const Ref<EWBIKBoneEffector3D> &p_effector);
 	Ref<EWBIKBoneEffector3D> get_effector() const;
 	void set_transform(const Transform &p_transform);
@@ -68,12 +68,12 @@ public:
 	void set_initial_transform(Skeleton3D *p_skeleton);
 	void create_effector();
 	bool is_effector() const;
-	Vector<BoneId> get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<EWBIKShadowBone3D>> &p_map) const;
+	Vector<BoneId> get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone>> &p_map) const;
 
-	EWBIKShadowBone3D() {}
-	EWBIKShadowBone3D(BoneId p_bone, const Ref<EWBIKShadowBone3D> &p_parent = nullptr);
-	EWBIKShadowBone3D(String p_bone, Skeleton3D *p_skeleton, const Ref<EWBIKShadowBone3D> &p_parent = nullptr);
-	~EWBIKShadowBone3D() {}
+	IKBone() {}
+	IKBone(BoneId p_bone, const Ref<IKBone> &p_parent = nullptr);
+	IKBone(String p_bone, Skeleton3D *p_skeleton, const Ref<IKBone> &p_parent = nullptr);
+	~IKBone() {}
 };
 
 #endif // EWBIK_SHADOW_BONE_3D_H
