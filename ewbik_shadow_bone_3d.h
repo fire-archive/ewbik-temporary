@@ -36,19 +36,19 @@
 #include "math/ik_transform.h"
 #include "scene/3d/skeleton_3d.h"
 
-class IKEffector;
+class IKEffector3D;
 
-class IKBone : public Reference {
-	GDCLASS(IKBone, Reference);
+class IKBone3D : public Reference {
+	GDCLASS(IKBone3D, Reference);
 
 private:
 	BoneId for_bone = -1;
-	Ref<IKBone> parent = nullptr;
-	Vector<Ref<IKBone>> children;
-	Ref<IKEffector> effector = nullptr;
+	Ref<IKBone3D> parent = nullptr;
+	Vector<Ref<IKBone3D>> children;
+	Ref<IKEffector3D> effector = nullptr;
 	IKTransform xform;
 
-	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone>> &p_map);
+	static bool has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map);
 
 protected:
 	static void _bind_methods();
@@ -56,10 +56,10 @@ protected:
 public:
 	void set_bone_id(BoneId p_bone_id, Skeleton3D *p_skeleton = nullptr);
 	BoneId get_bone_id() const;
-	void set_parent(const Ref<IKBone> &p_parent);
-	Ref<IKBone> get_parent() const;
-	void set_effector(const Ref<IKEffector> &p_effector);
-	Ref<IKEffector> get_effector() const;
+	void set_parent(const Ref<IKBone3D> &p_parent);
+	Ref<IKBone3D> get_parent() const;
+	void set_effector(const Ref<IKEffector3D> &p_effector);
+	Ref<IKEffector3D> get_effector() const;
 	void set_transform(const Transform &p_transform);
 	Transform get_transform() const;
 	void rotate(const Quat &p_rot);
@@ -68,12 +68,12 @@ public:
 	void set_initial_transform(Skeleton3D *p_skeleton);
 	void create_effector();
 	bool is_effector() const;
-	Vector<BoneId> get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone>> &p_map) const;
+	Vector<BoneId> get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map) const;
 
-	IKBone() {}
-	IKBone(BoneId p_bone, const Ref<IKBone> &p_parent = nullptr);
-	IKBone(String p_bone, Skeleton3D *p_skeleton, const Ref<IKBone> &p_parent = nullptr);
-	~IKBone() {}
+	IKBone3D() {}
+	IKBone3D(BoneId p_bone, const Ref<IKBone3D> &p_parent = nullptr);
+	IKBone3D(String p_bone, Skeleton3D *p_skeleton, const Ref<IKBone3D> &p_parent = nullptr);
+	~IKBone3D() {}
 };
 
 #endif // EWBIK_SHADOW_BONE_3D_H
