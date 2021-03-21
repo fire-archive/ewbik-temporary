@@ -3,12 +3,12 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-path="res://.godot/imported/ewbik_armature_spec.glb-d18243ea5f975c6beaf3779866b9a445.scn"
+path="res://.godot/imported/ewbik_armature_spec.glb-9491559276ef282e5b63f445d3732879.scn"
 
 [deps]
 
-source_file="res://ewbik_armature_spec.glb"
-dest_files=[ "res://.godot/imported/ewbik_armature_spec.glb-d18243ea5f975c6beaf3779866b9a445.scn" ]
+source_file="res://ewbik/art/ewbik_armature_spec/ewbik_armature_spec.glb"
+dest_files=[ "res://.godot/imported/ewbik_armature_spec.glb-9491559276ef282e5b63f445d3732879.scn" ]
 
 [params]
 
