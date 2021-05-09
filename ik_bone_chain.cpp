@@ -208,8 +208,8 @@ void IKBoneChain::update_optimal_rotation(Ref<IKBone3D> p_for_bone, int32_t p_co
 		return;
 	}
 	Vector<real_t> *weights = nullptr;
-	PackedVector3Array *htarget = update_target_headings(p_for_bone, weights);
-	PackedVector3Array *htip = update_tip_headings(p_for_bone);
+	Vector<Vector3> *htarget = update_target_headings(p_for_bone, weights);
+	Vector<Vector3> *htip = update_tip_headings(p_for_bone);
 	if (p_for_bone->get_parent().is_null() || htarget->size() == 1) {
 		p_constraint_stabilization_passes = 0;
 	}
@@ -229,8 +229,8 @@ void IKBoneChain::update_optimal_rotation(Ref<IKBone3D> p_for_bone, int32_t p_co
 		if (sqrmsd <= best_sqrmsd) {
 			best_sqrmsd = sqrmsd;
 		}
-		float sqrmsd_snapped = Math::snapped(sqrmsd, CMP_EPSILON);
-		float best_sqrmsd_snapped = Math::snapped(best_sqrmsd, CMP_EPSILON);
+		float sqrmsd_snapped = Math::stepify(sqrmsd, CMP_EPSILON);
+		float best_sqrmsd_snapped = Math::stepify(best_sqrmsd, CMP_EPSILON);
 		if (Math::is_equal_approx(sqrmsd_snapped, best_sqrmsd_snapped)) {
 			break;
 		}
@@ -271,8 +271,8 @@ Quat IKBoneChain::clamp_to_quadrance_angle(Quat p_quat, real_t p_cos_half_angle)
 	return rot;
 }
 
-real_t IKBoneChain::set_optimal_rotation(Ref<IKBone3D> p_for_bone, const PackedVector3Array &p_htarget,
-		const PackedVector3Array &p_htip, const Vector<real_t> &p_weights, float p_dampening) {
+real_t IKBoneChain::set_optimal_rotation(Ref<IKBone3D> p_for_bone, const Vector<Vector3> &p_htarget,
+		const Vector<Vector3> &p_htip, const Vector<real_t> &p_weights, float p_dampening) {
 	Quat rot;
 	real_t sqrmsd = qcp.calc_optimal_rotation(p_htip, p_htarget, p_weights, rot);
 
@@ -301,8 +301,8 @@ void IKBoneChain::create_headings() {
 	}
 }
 
-PackedVector3Array *IKBoneChain::update_target_headings(Ref<IKBone3D> p_for_bone, Vector<real_t> *&p_weights) {
-	PackedVector3Array *htarget;
+Vector<Vector3> *IKBoneChain::update_target_headings(Ref<IKBone3D> p_for_bone, Vector<real_t> *&p_weights) {
+	Vector<Vector3> *htarget;
 	if (tip == p_for_bone && tip->is_effector()) {
 		Ref<IKEffector3D> effector = tip->get_effector();
 		htarget = &effector->target_headings;
@@ -319,8 +319,8 @@ PackedVector3Array *IKBoneChain::update_target_headings(Ref<IKBone3D> p_for_bone
 	return htarget;
 }
 
-PackedVector3Array *IKBoneChain::update_tip_headings(Ref<IKBone3D> p_for_bone) {
-	PackedVector3Array *htip;
+Vector<Vector3> *IKBoneChain::update_tip_headings(Ref<IKBone3D> p_for_bone) {
+	Vector<Vector3> *htip;
 	if (tip == p_for_bone && tip->is_effector()) {
 		Ref<IKEffector3D> effector = tip->get_effector();
 		htip = &effector->tip_headings;
@@ -431,7 +431,7 @@ void IKBoneChain::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_tip_effector"), &IKBoneChain::is_tip_effector);
 }
 
-IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent) {
+IKBoneChain::IKBoneChain(Skeleton *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent) {
 	skeleton = p_skeleton;
 	root = Ref<IKBone3D>(memnew(IKBone3D(p_root_bone)));
 	if (p_parent.is_valid()) {
@@ -440,7 +440,7 @@ IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<I
 	}
 }
 
-IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone,
+IKBoneChain::IKBoneChain(Skeleton *p_skeleton, BoneId p_root_bone,
 		const HashMap<BoneId, Ref<IKBone3D>> &p_map, const Ref<IKBoneChain> &p_parent) {
 	skeleton = p_skeleton;
 	if (p_map.has(p_root_bone)) {
@@ -455,7 +455,7 @@ IKBoneChain::IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone,
 	generate_skeleton_segments(p_map);
 }
 
-real_t IKBoneChain::get_manual_sqrtmsd(const PackedVector3Array &p_htarget, const PackedVector3Array &p_htip, const Vector<real_t> &p_weights) const {
+real_t IKBoneChain::get_manual_sqrtmsd(const Vector<Vector3> &p_htarget, const Vector<Vector3> &p_htip, const Vector<real_t> &p_weights) const {
 	double manual_sqrtmsd = 0.0;
 	double w_sum = 0.0;
 	for (int i = 0; i < p_htarget.size(); i++) {

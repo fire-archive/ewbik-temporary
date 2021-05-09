@@ -58,10 +58,10 @@ Transform IKEffector3D::get_goal_transform() const {
 	return goal_transform;
 }
 
-bool IKEffector3D::is_node_xform_changed(Skeleton3D *p_skeleton) const {
+bool IKEffector3D::is_node_xform_changed(Skeleton *p_skeleton) const {
 	Node *node = p_skeleton->get_node_or_null(target_nodepath);
-	if (node && node->is_class("Node3D")) {
-		Node3D *target_node = Object::cast_to<Node3D>(node);
+	if (node && node->is_class("Spatial")) {
+		Spatial *target_node = Object::cast_to<Spatial>(node);
 		return prev_node_xform != target_node->get_global_transform();
 	}
 	return false;
@@ -75,11 +75,11 @@ bool IKEffector3D::is_following_translation_only() const {
 	return !(follow_x || follow_y || follow_z);
 }
 
-void IKEffector3D::update_goal_transform(Skeleton3D *p_skeleton) {
+void IKEffector3D::update_goal_transform(Skeleton *p_skeleton) {
 	goal_transform = Transform();
 	Node *node = p_skeleton->get_node_or_null(target_nodepath);
-	if (node && node->is_class("Node3D")) {
-		Node3D *target_node = Object::cast_to<Node3D>(node);
+	if (node && node->is_class("Spatial")) {
+		Spatial *target_node = Object::cast_to<Spatial>(node);
 		Transform node_xform = target_node->get_global_transform();
 		if (use_target_node_rotation) {
 			goal_transform = p_skeleton->get_global_transform().affine_inverse() * node_xform;
@@ -151,7 +151,7 @@ void IKEffector3D::create_headings(const Vector<real_t> &p_weights) {
 	// }
 }
 
-void IKEffector3D::update_target_headings(Ref<IKBone3D> p_for_bone, PackedVector3Array *p_headings, int32_t &p_index,
+void IKEffector3D::update_target_headings(Ref<IKBone3D> p_for_bone, Vector<Vector3> *p_headings, int32_t &p_index,
 		Vector<real_t> *p_weights) const {
 	Vector3 origin = p_for_bone->get_global_transform().origin;
 	if (p_for_bone == for_bone) {
@@ -228,7 +228,7 @@ void IKEffector3D::update_target_headings(Ref<IKBone3D> p_for_bone, PackedVector
 	}
 }
 
-void IKEffector3D::update_tip_headings(Ref<IKBone3D> p_for_bone, PackedVector3Array *p_headings, int32_t &p_index) const {
+void IKEffector3D::update_tip_headings(Ref<IKBone3D> p_for_bone, Vector<Vector3> *p_headings, int32_t &p_index) const {
 	Vector3 origin = p_for_bone->get_global_transform().origin;
 	Transform tip_xform = for_bone->get_global_transform();
 	if (p_for_bone == for_bone) {

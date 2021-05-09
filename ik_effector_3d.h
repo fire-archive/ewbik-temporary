@@ -30,9 +30,9 @@
 #ifndef ik_effector_3d_H
 #define ik_effector_3d_H
 
-#include "core/object/reference.h"
+#include "core/reference.h"
 #include "ik_bone_3d.h"
-#include "scene/3d/skeleton_3d.h"
+#include "scene/3d/skeleton.h"
 
 #define MIN_SCALE 0.1
 
@@ -54,14 +54,14 @@ private:
 	Vector3 priority = Vector3(0.5, 5.0, 0.0);
 	real_t weight = 1.0;
 	bool follow_x, follow_y, follow_z;
-	PackedVector3Array target_headings;
-	PackedVector3Array tip_headings;
+	Vector<Vector3> target_headings;
+	Vector<Vector3> tip_headings;
 	Vector<real_t> heading_weights;
 
 	Transform prev_node_xform;
 
 	void update_priorities();
-	void update_goal_transform(Skeleton3D *p_skeleton);
+	void update_goal_transform(Skeleton *p_skeleton);
 
 protected:
 	static void _bind_methods();
@@ -75,12 +75,12 @@ public:
 	void set_use_target_node_rotation(bool p_use);
 	bool get_use_target_node_rotation() const;
 	Transform get_goal_transform() const;
-	bool is_node_xform_changed(Skeleton3D *p_skeleton) const;
+	bool is_node_xform_changed(Skeleton *p_skeleton) const;
 	Ref<IKBone3D> get_shadow_bone() const;
 	void create_weights(Vector<real_t> &p_weights, real_t p_falloff) const;
 	bool is_following_translation_only() const;
-	void update_target_headings(Ref<IKBone3D> p_for_bone, PackedVector3Array *p_headings, int32_t &p_index, Vector<real_t> *p_weights) const;
-	void update_tip_headings(Ref<IKBone3D> p_for_bone, PackedVector3Array *p_headings, int32_t &p_index) const;
+	void update_target_headings(Ref<IKBone3D> p_for_bone, Vector<Vector3> *p_headings, int32_t &p_index, Vector<real_t> *p_weights) const;
+	void update_tip_headings(Ref<IKBone3D> p_for_bone, Vector<Vector3> *p_headings, int32_t &p_index) const;
 
 	IKEffector3D(const Ref<IKBone3D> &p_for_bone);
 	~IKEffector3D() {}

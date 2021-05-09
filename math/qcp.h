@@ -32,7 +32,7 @@
 #define QCP_H
 
 #include "core/math/quat.h"
-#include "core/variant/variant.h"
+#include "core/variant.h"
 
 class QCP {
 private:
@@ -43,15 +43,15 @@ private:
 	real_t SxxpSyy, SyzmSzy, SxzmSzx, SxymSyx = 0;
 	real_t SxxmSyy, SxypSyx, SxzpSzx, SyzpSzy = 0;
 
-	real_t inner_product(const PackedVector3Array &p_coords1, const PackedVector3Array &p_coords2, const Vector<real_t> &p_weights);
-	real_t center_coords(PackedVector3Array &p_coords1, PackedVector3Array &p_coords2, const Vector<real_t> &p_weights, Vector3 &translation) const;
+	real_t inner_product(const Vector<Vector3> &p_coords1, const Vector<Vector3> &p_coords2, const Vector<real_t> &p_weights);
+	real_t center_coords(Vector<Vector3> &p_coords1, Vector<Vector3> &p_coords2, const Vector<real_t> &p_weights, Vector3 &translation) const;
 	real_t calc_sqrmsd(real_t &e0, real_t wsum);
 	Quat calc_rotation(real_t p_eigenv) const;
 
 public:
 	void set_precision(real_t p_evec_prec, real_t p_eval_prec);
 	void set_max_iterations(int32_t p_max);
-	real_t calc_optimal_rotation(const PackedVector3Array &p_coords1, const PackedVector3Array &p_coords2,
+	real_t calc_optimal_rotation(const Vector<Vector3> &p_coords1, const Vector<Vector3> &p_coords2,
 			const Vector<real_t> &p_weights, Quat &p_quat);
 };
 

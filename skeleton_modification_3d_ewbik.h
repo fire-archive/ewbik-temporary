@@ -31,7 +31,7 @@
 #ifndef SKELETON_MODIFICATION_3D_EWBIK_H
 #define SKELETON_MODIFICATION_3D_EWBIK_H
 
-#include "core/object/reference.h"
+#include "core/reference.h"
 #include "core/os/memory.h"
 #include "ik_bone_chain.h"
 #include "scene/resources/skeleton_modification_3d.h"
@@ -40,7 +40,7 @@ class SkeletonModification3DEWBIK : public SkeletonModification3D {
 	GDCLASS(SkeletonModification3DEWBIK, SkeletonModification3D);
 
 private:
-	Skeleton3D *skeleton = nullptr;
+	Skeleton *skeleton = nullptr;
 	String root_bone;
 	BoneId root_bone_index = -1;
 	Ref<IKBoneChain> segmented_skeleton;

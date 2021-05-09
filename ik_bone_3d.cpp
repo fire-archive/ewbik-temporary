@@ -30,7 +30,7 @@
 
 #include "ik_bone_3d.h"
 
-void IKBone3D::set_bone_id(BoneId p_bone_id, Skeleton3D *p_skeleton) {
+void IKBone3D::set_bone_id(BoneId p_bone_id, Skeleton *p_skeleton) {
 	bone_id = p_bone_id;
 }
 
@@ -88,7 +88,7 @@ void IKBone3D::set_rot_delta(const Quat &p_rot) {
 	set_global_transform(get_global_transform() * rot_xform);
 }
 
-void IKBone3D::set_initial_transform(Skeleton3D *p_skeleton) {
+void IKBone3D::set_initial_transform(Skeleton *p_skeleton) {
 	Transform bxform = p_skeleton->get_bone_global_pose(bone_id);
 	if (parent.is_valid()) {
 		bxform = parent->get_global_transform().affine_inverse() * bxform;
@@ -100,7 +100,7 @@ void IKBone3D::set_initial_transform(Skeleton3D *p_skeleton) {
 	rot_delta = Quat();
 }
 
-void IKBone3D::set_skeleton_bone_transform(Skeleton3D *p_skeleton, real_t p_strength) {
+void IKBone3D::set_skeleton_bone_transform(Skeleton *p_skeleton, real_t p_strength) {
 	Transform custom = Transform(Basis(rot_delta), Vector3());
 	p_skeleton->set_bone_local_pose_override(bone_id, custom, p_strength, true);
 }
@@ -113,7 +113,7 @@ bool IKBone3D::is_effector() const {
 	return effector.is_valid();
 }
 
-Vector<BoneId> IKBone3D::get_children_with_effector_descendants(Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map) const {
+Vector<BoneId> IKBone3D::get_children_with_effector_descendants(Skeleton *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map) const {
 	Vector<BoneId> children_with_effector;
 	Vector<BoneId> children = p_skeleton->get_bone_children(bone_id);
 	for (int32_t child_i = 0; child_i < children.size(); child_i++) {
@@ -125,7 +125,7 @@ Vector<BoneId> IKBone3D::get_children_with_effector_descendants(Skeleton3D *p_sk
 	return children_with_effector;
 }
 
-bool IKBone3D::has_effector_descendant(BoneId p_bone, Skeleton3D *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map) {
+bool IKBone3D::has_effector_descendant(BoneId p_bone, Skeleton *p_skeleton, const HashMap<BoneId, Ref<IKBone3D>> &p_map) {
 	if (p_map.has(p_bone) && p_map[p_bone]->is_effector()) {
 		return true;
 	} else {
@@ -153,7 +153,7 @@ IKBone3D::IKBone3D(BoneId p_bone, const Ref<IKBone3D> &p_parent, float p_default
 	set_parent(p_parent);
 }
 
-IKBone3D::IKBone3D(String p_bone, Skeleton3D *p_skeleton, const Ref<IKBone3D> &p_parent, float p_default_dampening) :
+IKBone3D::IKBone3D(String p_bone, Skeleton *p_skeleton, const Ref<IKBone3D> &p_parent, float p_default_dampening) :
 		default_dampening(p_default_dampening) {
 	bone_id = p_skeleton->find_bone(p_bone);
 	set_parent(p_parent);

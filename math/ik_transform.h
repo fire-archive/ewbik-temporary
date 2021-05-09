@@ -32,7 +32,7 @@
 #define IK_TRANSFORM_H
 
 #include "core/math/transform.h"
-#include "core/templates/list.h"
+#include "core/list.h"
 
 class IKTransform {
 	enum TransformDirty {

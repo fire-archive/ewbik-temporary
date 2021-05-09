@@ -39,7 +39,7 @@ void QCP::set_max_iterations(int32_t p_max) {
 	max_iterations = p_max;
 }
 
-real_t QCP::calc_optimal_rotation(const PackedVector3Array &p_coords1, const PackedVector3Array &p_coords2,
+real_t QCP::calc_optimal_rotation(const Vector<Vector3> &p_coords1, const Vector<Vector3> &p_coords2,
 		const Vector<real_t> &p_weights, Quat &p_quat) {
 	real_t wsum = 0.0;
 	for (int i = 0; i < p_weights.size(); i++) {
@@ -62,7 +62,7 @@ real_t QCP::calc_optimal_rotation(const PackedVector3Array &p_coords1, const Pac
 	return sqrmsd;
 }
 
-real_t QCP::center_coords(PackedVector3Array &p_coords1, PackedVector3Array &p_coords2, const Vector<real_t> &p_weights, Vector3 &translation) const {
+real_t QCP::center_coords(Vector<Vector3> &p_coords1, Vector<Vector3> &p_coords2, const Vector<real_t> &p_weights, Vector3 &translation) const {
 	Vector3 c1 = Vector3();
 	Vector3 c2 = Vector3();
 	real_t wsum = 0.0;
@@ -84,7 +84,7 @@ real_t QCP::center_coords(PackedVector3Array &p_coords1, PackedVector3Array &p_c
 	return wsum;
 }
 
-real_t QCP::inner_product(const PackedVector3Array &p_coords1, const PackedVector3Array &p_coords2, const Vector<real_t> &p_weights) {
+real_t QCP::inner_product(const Vector<Vector3> &p_coords1, const Vector<Vector3> &p_coords2, const Vector<real_t> &p_weights) {
 	real_t g1 = 0.0f;
 	real_t g2 = 0.0f;
 	real_t x1, x2, y1, y2, z1, z2;

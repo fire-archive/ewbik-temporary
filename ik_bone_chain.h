@@ -31,10 +31,10 @@
 #ifndef ik_bone_chain_H
 #define ik_bone_chain_H
 
-#include "core/object/reference.h"
+#include "core/reference.h"
 #include "ik_bone_3d.h"
 #include "math/qcp.h"
-#include "scene/3d/skeleton_3d.h"
+#include "scene/3d/skeleton.h"
 
 class IKBoneChain : public Reference {
 	GDCLASS(IKBoneChain, Reference);
@@ -47,12 +47,12 @@ private:
 	HashMap<BoneId, Ref<IKBone3D>> bones_map;
 	Ref<IKBoneChain> parent_chain;
 	Vector<Ref<IKEffector3D>> effector_list;
-	PackedVector3Array target_headings;
-	PackedVector3Array tip_headings;
+	Vector<Vector3> target_headings;
+	Vector<Vector3> tip_headings;
 	Vector<real_t> heading_weights;
 	int32_t idx_eff_i = -1, idx_eff_f = -1;
 
-	Skeleton3D *skeleton = nullptr;
+	Skeleton *skeleton = nullptr;
 	QCP qcp;
 
 	BoneId find_root_bone_id(BoneId p_bone);
@@ -62,11 +62,11 @@ private:
 	void generate_bones_map();
 	Ref<IKBoneChain> get_child_segment_containing(const Ref<IKBone3D> &p_bone);
 	void create_headings();
-	PackedVector3Array *update_target_headings(Ref<IKBone3D> p_for_bone, Vector<real_t> *&p_weights);
-	PackedVector3Array *update_tip_headings(Ref<IKBone3D> p_for_bone);
-	real_t get_manual_sqrtmsd(const PackedVector3Array &p_htarget, const PackedVector3Array &p_htip, const Vector<real_t> &p_weights) const;
-	real_t set_optimal_rotation(Ref<IKBone3D> p_for_bone, const PackedVector3Array &p_htarget,
-			const PackedVector3Array &p_htip, const Vector<real_t> &p_weights, float p_dampening = -1);
+	Vector<Vector3> *update_target_headings(Ref<IKBone3D> p_for_bone, Vector<real_t> *&p_weights);
+	Vector<Vector3> *update_tip_headings(Ref<IKBone3D> p_for_bone);
+	real_t get_manual_sqrtmsd(const Vector<Vector3> &p_htarget, const Vector<Vector3> &p_htip, const Vector<real_t> &p_weights) const;
+	real_t set_optimal_rotation(Ref<IKBone3D> p_for_bone, const Vector<Vector3> &p_htarget,
+			const Vector<Vector3> &p_htip, const Vector<real_t> &p_weights, float p_dampening = -1);
 	void segment_solver(int32_t p_stabilization_passes);
 	void qcp_solver(int32_t p_stabilization_passes);
 	void update_optimal_rotation(Ref<IKBone3D> p_for_bone, int32_t p_stabilization_passes);
@@ -94,8 +94,8 @@ public:
 	void debug_print_chains(Vector<bool> p_levels = Vector<bool>());
 
 	IKBoneChain() {}
-	IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent = nullptr);
-	IKBoneChain(Skeleton3D *p_skeleton, BoneId p_root_bone,
+	IKBoneChain(Skeleton *p_skeleton, BoneId p_root_bone, const Ref<IKBoneChain> &p_parent = nullptr);
+	IKBoneChain(Skeleton *p_skeleton, BoneId p_root_bone,
 			const HashMap<BoneId, Ref<IKBone3D>> &p_map, const Ref<IKBoneChain> &p_parent = nullptr);
 	~IKBoneChain() {}
 };
