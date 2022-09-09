@@ -52,6 +52,7 @@ class IKBone3D : public Resource {
 	Ref<IKBone3D> parent;
 	Vector<Ref<IKBone3D>> children;
 	Ref<IKEffector3D> pin;
+	double last_mean_square_deviation = INFINITY;
 
 	float default_dampening = Math_PI;
 	float dampening = get_parent().is_null() ? Math_PI : default_dampening;
@@ -69,6 +70,12 @@ protected:
 	static void _bind_methods();
 
 public:
+	double get_last_mean_square_deviation() {
+		return last_mean_square_deviation;
+	}
+	void set_last_mean_square_deviation(double p_last_mean_square_deviation) {
+		last_mean_square_deviation = p_last_mean_square_deviation;
+	}
 	Ref<IKTransform3D> get_bone_direction_transform();
 	void set_bone_direction_transform(Ref<IKTransform3D> p_bone_direction);
 	void set_constraint_transform(Ref<IKTransform3D> p_transform);
